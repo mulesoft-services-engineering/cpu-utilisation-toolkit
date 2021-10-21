@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="collectors_master-flow" doc:id="f729df49-645f-4e27-b566-fbb39d926273" >
+		<flow-ref doc:name="anypoint-api-calls_login" doc:id="f52a9003-abf1-4ade-bb59-209197e61474" name="anypoint-api-calls_login" target="token" targetValue="#[payload.access_token]"/>
+		<flow-ref doc:name="anypoint-api-calls_organizations" doc:id="41ce9f6b-2d70-4798-b8d0-eacc37a39996" name="anypoint-api-calls_organizations"/>
+		<ee:transform doc:name="Build Business Group List" doc:id="bc02240a-5357-4ec1-966e-06d172359555" >
+			<ee:message >
+				<ee:set-payload resource="dw/aggregation/build-orgs-aggregation.dwl" />
+			</ee:message>
+			<ee:variables >
+			</ee:variables>
+		</ee:transform>
+		<parallel-foreach doc:name="For Each Business Group" doc:id="81019773-676e-484b-9416-0a4d6aff2154" collection="#[payload]">
+			<ee:transform doc:name="Set Org Id, Name and Entitlements Vars" doc:id="73d274d3-8894-4597-9d56-20f862eb73ed" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable resource="dw/aggregation/set-org-id-var.dwl" variableName="orgId" />
+					<ee:set-variable resource="dw/aggregation/set-org-name-var.dwl" variableName="orgName" />
+					<ee:set-variable resource="dw/aggregation/set-vCoreAllocation-var.dwl" variableName="vCoreAllocation" />
+				</ee:variables>
+			</ee:transform>
+			<logger level="INFO" doc:name="Log - Aggregate metrics" doc:id="511c755f-a395-45f4-bf8d-549dd970d762" message="Aggregating metrics from the OrgId: #[vars.orgId]"/>
+			<flow-ref doc:name="collectors_app-usage-aggregator" doc:id="17ffc6aa-5d54-4543-80e4-8779baba782a" name="collectors_app-usage-aggregator"/>
+			<ee:transform doc:name="Transform Message" doc:id="f9673b5e-fa58-4369-a1dc-800797d3e5fe" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+
+var vCoreAllocation = vars.vCoreAllocation
+
+var applicationList = flatten(payload.payload) filter ((item, index) -> item.application != null) groupBy ((item, index) -> item.environmentType)
+
+fun allocatedVcores(array) = array default [] 
+	filter ((item, index) -> item != null) 
+	reduce ((item, accumulator = 0) -> accumulator + (item.workerType * item.workerAmount))
+	
+fun avgWeightedCpu(cpus, totalCpu) =
+    if (totalCpu != null and totalCpu > 0) 
+    (cpus 
+        filter ((item, index) -> item != null or item.averageCPUUtilisation < 0)
+        map ((item, index) -> item.workerAmount * item.averageCPUUtilisation * item.workerType) default [] 
+        reduce($$ + $) default 0
+    ) / totalCpu
+    else 0
+---
+{
+	businessGroupName: vars.orgName,
+	businessGroupId: vars.orgId,
+    production: {
+        applications: applicationList.Production default[],
+        totalVCores: vCoreAllocation.vCoresProduction,
+        allocatedVcores: allocatedVcores(applicationList.Production),
+        avgWeightedCpu: avgWeightedCpu(applicationList.Production, vCoreAllocation.vCoresProduction)
+    },
+    sandbox: {
+        applications: applicationList.Sandbox default[],
+        totalVCores: vCoreAllocation.vCoresSandbox,
+        allocatedVcores: allocatedVcores(applicationList.Sandbox),
+        avgWeightedCpu: avgWeightedCpu(applicationList.Sandbox, vCoreAllocation.vCoresSandbox)
+    },  
+    design: {
+        applications: applicationList.Design default[],
+        totalVCores: vCoreAllocation.vCoresDesign,
+        allocatedVcores: allocatedVcores(applicationList.Design),
+        avgWeightedCpu: avgWeightedCpu(applicationList.Design, vCoreAllocation.vCoresDesign)
+    } 
+}
+]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</parallel-foreach>
+		<ee:transform doc:name="Transform Message" doc:id="af32af4e-58e4-48bc-b05f-cf696a872962" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+
+var applicationList = flatten(payload..applications) groupBy ((item, index) -> item.environmentType)
+
+fun avgWeightedCpu(cpus, totalCpu) =
+    if (totalCpu != null and totalCpu > 0) 
+    (cpus 
+        filter ((item, index) -> item != null or item.averageCPUUtilisation < 0)
+        map ((item, index) -> item.workerAmount * item.averageCPUUtilisation * item.workerType) default [] 
+        reduce($$ + $) default 0
+    ) / totalCpu
+    else 0
+
+
+---
+{
+    summary: {
+        production: {
+            totalVCores: sum(payload..production.totalVCores),
+            allocatedVcores: sum(payload..production.allocatedVcores),
+            avgCPUusage: avgWeightedCpu(applicationList.Production, sum(payload..production.totalVCores))
+        },
+        sandbox: {
+            totalVCores: sum(payload..sandbox.totalVCores),
+            allocatedVcores: sum(payload..sandbox.allocatedVcores),
+            avgCPUusage: avgWeightedCpu(applicationList.Sandbox, sum(payload..sandbox.totalVCores))
+        },
+        design: {
+            totalVCores: sum(payload..design.totalVCores),
+            allocatedVcores: sum(payload..design.allocatedVcores),
+            avgCPUusage: avgWeightedCpu(applicationList.Design, sum(payload..design.totalVCores))
+        },
+        startDatetime: vars.startDate,
+        endDatetime: vars.endDate
+    },
+    businessGroupLevelDetails: payload.payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="collectors_app-usage-aggregator" doc:id="122d71b6-e0e7-48b5-8efd-aa75d077a951">
+		<try doc:name="Try" doc:id="5c6a4df6-a8b5-4708-bb6e-7cf5cc7c817e" >
+			<flow-ref doc:name="anypoint-api-calls_environments" doc:id="d8f8b7cf-e1d7-4269-a45b-73208e4cbe90" name="anypoint-api-calls_environments" target="environments"/>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="42972dce-af68-4723-966d-ca35ac26d13f" >
+					<logger level="INFO" doc:name="Logger" doc:id="209fc1fb-ec78-484c-8ee6-434d2b190546" message="Getting environments failed"/>
+					<set-variable value="#[vars.errors + error.description]" doc:name="Set Variable" doc:id="354751bd-39f1-423e-bfb5-f117a145d650" variableName="errors"/>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<ee:transform doc:name="Build Environments List" doc:id="ee967be5-48e0-4282-87aa-e37ddb322b63" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable resource="dw/aggregation/build-envs-aggregation.dwl" variableName="environments" />
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="If there are environments" doc:id="d9136049-208e-4910-9c15-f0eb7fa7b7bb" >
+			<when expression="#[not isEmpty(vars.environments)]">
+				<logger level="INFO" doc:name="Logger" doc:id="1363d04d-6dc2-4c5f-9254-22b4111f214d" message="Metrics aggregated successfully" />
+				<flow-ref doc:name="collectors_cloudhub-apps-metrics-parallel-flow" doc:id="fd379431-1c33-48d0-a92e-33ae9adc31e6" name="collectors_cloudhub-apps-metrics-parallel-flow"/>
+			</when>
+			<otherwise >
+				<logger level="ERROR" doc:name="Log - Environments is empty" doc:id="c185ae64-29e8-4dba-8331-629d8d723ae3" message="Environments empty, skipping following calls"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="collectors_cloudhub-apps-metrics-parallel-flow" doc:id="45124116-4fa0-4f32-8b71-8de89ba10545">
+		<parallel-foreach doc:name="Parallel For Each Environment" doc:id="506bfa02-34c3-4b8b-9d98-1446b82f5e0d" collection="#[vars.environments]">
+			<ee:transform doc:name="Set Environment Name, ID and Type vars" doc:id="320fe939-47cb-41b1-89a0-eb983ab46be0" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="environmentName" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.name]]></ee:set-variable>
+					<ee:set-variable variableName="environmentId" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.id]]></ee:set-variable>
+					<ee:set-variable variableName="isProduction" ><![CDATA[%dw 2.0
+output application/java
+---
+payload.isProduction]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="anypoint-api-calls_cloudhub-apps" doc:id="3031b559-c220-42ae-83c6-1c9b14b4baa5" name="anypoint-api-calls_cloudhub-apps" />
+			<logger level="DEBUG" doc:name="Logger" doc:id="52ca4443-6ddb-42e4-a9bb-d4e13312ee5f" message="#[payload]" />
+			<ee:transform doc:name="Filter running apps" doc:id="0957c332-8b9e-4df7-87b7-d574c67e24e8" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload filter (value, index) -> (value.status == "STARTED")]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<parallel-foreach doc:name="Parallel For Each Application" doc:id="e5d2dde1-2fb0-46a7-8218-da456337b913" collection="#[payload]">
+				<set-variable value="#[{name: payload.domain, workers: payload.workers, status: payload.status}]" doc:name="Set Application Name" doc:id="caf1da09-4e2d-48d2-b9e2-c7f48b689dc2" variableName="applicationDetails" />
+				<flow-ref doc:name="anypoint-api-calls_ch-app-stats" doc:id="22e81516-740b-4bbe-9b97-f9151db1280f" name="anypoint-api-calls_ch-app-stats"/>
+				<ee:transform doc:name="Transform Message" doc:id="008773cf-0e49-4e26-9580-0827899289c7">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+---
+{
+	application: vars.applicationDetails,
+	statistics: payload.workerStatistics
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+        
+		</parallel-foreach>
+			<ee:transform doc:name="Aggregate statistics" doc:id="e736bc57-cccc-4eba-a7d3-3eb677598f9c" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+fun appAverageCpu(workerStatistics) = if(!isEmpty(workerStatistics)) 
+sum(workerStatistics 
+	map (((item, index) -> 
+        if(item.statistics != null and item.statistics.cpu != null)
+		avg(item.statistics.cpu 
+			filterObject ((value, key, index) -> value != null and value != -1) 
+			pluck ((value, key, index) -> value)
+		) else 0
+	)) default []
+) 
+else 0
+---
+payload..payload  map ( {
+        application : $.application.name,
+        environment : vars.environmentName,
+        environmentType: if(vars.isProduction) "Production" else "Sandbox",
+        businessGroup: vars.orgId,
+        workerType: $.application.workers."type".weight,
+        workerAmount: $.application.workers.amount,
+        status: $.application.status,
+        averageCPUUtilisation: appAverageCpu($.statistics),
+        endDate: vars.endDate,
+	    startDate : vars.startDate
+    })
+]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</parallel-foreach>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="40ab4d6d-4061-4bfc-a405-95d0994c4d55" >
+				<logger level="WARN" doc:name="Logger" doc:id="4ab46a3f-feef-44bb-9dbd-62068f084487" message="'Not able to get CloudHub apps metrics for BG:' #[vars.orgId]"/>
+				<set-variable value="#[vars.errors + error.description]" doc:name="Set Errors Variable" doc:id="3535e6ae-cb5c-4a3b-ac6f-987a1d3b737d" variableName="errors"/>
+			</on-error-continue>
+		</error-handler>
+	</flow>
+	
+</mule>

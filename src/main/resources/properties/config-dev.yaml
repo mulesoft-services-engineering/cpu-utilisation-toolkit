@@ -1,0 +1,58 @@
+http:
+  port: "8081"
+  private.port: "8091"
+https:
+  port: "8082"
+  private.port: "8092"
+  
+auth:
+  mode: "connected-app-credentials" # valid options are: platform-credentials or connected-app-credentials
+  
+poller:
+  collector: 
+    enabled: "true"
+    cron: "0 0 * ? * *" 
+      #Sample for dev "0 17 * * * ? *" At second :00 of minute :17 of every hour
+      #Sample for prod "0 0 0 * * ? *" At 00:00:00am every day
+      #https://www.freeformatter.com/cron-expression-generator-quartz.html
+    timezone: "GMT-3"
+  reporter: 
+    enabled: "true"
+    cron: "0 0 18 ? * * *" 
+      #Sample for dev "0 17 * * * ? *" At second :00 of minute :17 of every hour
+      #Sample for prod "0 0 0 * * ? *" At 00:00:00am every day
+      #https://www.freeformatter.com/cron-expression-generator-quartz.html
+    timezone: "GMT-3"
+
+#Anypoint Platform API Config
+anypoint:
+  platform:
+    responseTimeout: "30000"
+    apis:
+      cloudhub:
+        maxConcurrency: "100"
+        apps:
+          interval: "360000"
+          
+          
+#Loaders Config
+loaders:
+  osv2:
+    enabled: "true"
+  am:
+    enabled: "true"
+#Reports config
+reports: 
+  enabled: "email" #Comma separated list of the reports which are to be enabled e.g. "email, TODO" 
+  #SMTP config for email reports
+  smtp:
+    host: "smtp.gmail.com"
+    port: "465"
+    username: "enablementmock@gmail.com"
+    toEmailAddress: "richardmc17@gmail.com"
+    fromEmailAddress: "enablementmock@gmail.com"
+
+
+
+
+

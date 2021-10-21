@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd 
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="common_set-auth-vars-from-headers" doc:id="20b7b872-4b5c-4f51-a17f-4875934cf0b5">
+
+		<validation:is-true
+			doc:name="Credentials provided?"
+			doc:id="06254ef7-fa62-4b22-913a-d5d1c63edebb"
+			expression='#[( (!isEmpty(attributes.headers."x-anypnt-username") and !isEmpty(attributes.headers."x-anypnt-password")) or (!isEmpty(attributes.headers."x-anypnt-client-id") and !isEmpty(attributes.headers."x-anypnt-client-secret")) )]' message="Anypoint username and password OR connected app clientId and clientSecret must be provided."/>
+		<ee:transform doc:name="Set Master Org Id and Auth Mode" doc:id="41948439-ebc8-428a-b6f5-90f4e97225c5" >
+			<ee:variables >
+				<ee:set-variable resource="dw/common/set-master-org-id-var.dwl" variableName="masterOrgId" />
+				<ee:set-variable resource="dw/common/set-auth-mode-var.dwl" variableName="authMode" />
+				<ee:set-variable resource="dw/common/set-client-secret-var.dwl" variableName="clientSecret" />
+				<ee:set-variable resource="dw/common/set-client-id-var.dwl" variableName="clientId" />
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	
+	<flow name="common_set-auth-vars-from-properties" doc:id="9e9b47cd-9f88-4d7a-a42a-a3662f60edb6">
+	  <ee:transform doc:name="Set Auth Mode" doc:id="dd78a038-ff6b-4c95-940b-a77db8b38b24" >
+	    <ee:message >
+	    </ee:message>
+	    <ee:variables >
+				<ee:set-variable resource="dw/common/set-auth-mode-from-props-var.dwl" variableName="authMode" />
+	    </ee:variables>
+	  </ee:transform>
+	  <ee:transform doc:name="Set Auth Vars from Properties" doc:id="bbd69ff4-dff1-413b-b6a9-d632dcde3a2f" >
+	    <ee:message >
+	    </ee:message>
+	    <ee:variables >
+	      <ee:set-variable resource="dw/common/set-client-id-from-props-var.dwl" variableName="clientId" />
+				<ee:set-variable resource="dw/common/set-master-org-id-from-props-vars.dwl" variableName="masterOrgId" />
+				<ee:set-variable resource="dw/common/set-client-secret-from-props-var.dwl" variableName="clientSecret" />
+	    </ee:variables>
+	  </ee:transform>
+	</flow>
+	<flow name="common_set-start-end-interval-vars" doc:id="facd98e5-6f6c-4661-ae46-abdb066955e0" doc:description="Set the start, end and interval values for which statistics will be requested. &#10;If the HTTP request provides a valid X-START-DATE header, this value is used as the start date.  Otherwise the current datetime minus 1 hours is used. &#10;If the HTTP request provides a valid X-END-DATE header, this value is used as the end date.  Otherwise the current datetime is used. &#10;If a valid X-INTERVAL header is provided, this value is used. Otherwise the value is taken from the config property. ">
+		<ee:transform doc:name="Set start, end and interval" doc:id="41b3415c-53bd-478a-9c1a-5aa501a92fca">
+			<ee:variables>
+				<ee:set-variable resource="dw/common/set-enddate-var.dwl" variableName="endDate" />
+				<ee:set-variable resource="dw/common/set-startdate-var.dwl" variableName="startDate" />
+				<ee:set-variable resource="dw/common/set-interval-var.dwl" variableName="interval" />
+			</ee:variables>
+		</ee:transform>
+	</flow>
+	<flow name="common_set-report-vars-from-payload" doc:id="1d25d314-e960-437c-956b-ff163ad9fb98">
+	  <ee:transform doc:name="Set Report Vars from Payload" doc:id="379b5016-3e16-42b2-8209-ffb3c63288a0" >
+	    <ee:message >
+	    </ee:message>
+	    <ee:variables >
+				<ee:set-variable variableName="reportDetails" ><![CDATA[%dw 2.0
+output application/java
+var emailDetails = payload.reports.email
+---
+//should add base64 for email password
+//Additional mapping to be added for any other reports 
+{
+	email: {
+		host: emailDetails.smtpHost,
+		port: emailDetails.smtpPort,
+		username: emailDetails.smtpUsername,
+		password: emailDetails.smtpPassword,
+		toEmailAddresses: emailDetails.toEmailAddresses,
+		fromEmailAddress: emailDetails.fromEmailAddress
+	}
+}
+]]></ee:set-variable>
+	    </ee:variables>
+	  </ee:transform>
+	</flow>
+	<flow name="common_set-report-vars-from-properties" doc:id="eefad59c-bc42-482a-93df-148825e1c5b1">
+	  <ee:transform doc:name="Set Report Vars from Properties" doc:id="d92c87f6-8734-4409-ada4-d7f849194da1" >
+	    <ee:message >
+	    </ee:message>
+	    <ee:variables >
+				<ee:set-variable variableName="reportDetails" ><![CDATA[%dw 2.0
+output application/java
+var reports = p('reports.enabled') default "" splitBy  ","
+---
+// payload.message replace /([^a-zA-Z0-9-_:.\/])/ with '_'
+reports reduce ((item, accumulator={}) -> 
+    accumulator ++ (
+        (item match {
+  		case "email" -> smtp: {
+  			host: p('reports.smtp.host'),
+			port: p('reports.smtp.port'),
+			username: p('reports.smtp.username'),
+			password: p('secure::reports.smtp.password'),
+			toEmailAddress: p('reports.smtp.toEmailAddress') splitBy ","
+  		}
+		//additional cases can be added for each loader
+  		else -> {}
+	})
+        
+        )
+)]]></ee:set-variable>
+	    </ee:variables>
+	  </ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:compression="http://www.mulesoft.org/schema/mule/compression" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/compression http://www.mulesoft.org/schema/mule/compression/current/mule-compression.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+	<flow name="reports_master-flow" doc:id="6446e774-7e07-4468-b1e9-296cdf930dd5" >
+		<logger level="INFO" doc:name="Logger" doc:id="7509e351-1a47-4469-8c0b-19b2bf0d2253" message="Reporters master flow"/>
+		<flow-ref doc:name="reports_email" doc:id="dfc1830d-b9f4-4b79-a9b7-2792da79c917" name="reports_email" />
+	</flow>
+	<flow name="reports_email" doc:id="5d60e2b3-63c2-4c74-8da3-77813e467224" >
+		<choice doc:name="Choice" doc:id="c24945c6-cbca-4385-8dc3-7e5b6d3f0788" >
+			<when expression="#[!isEmpty(vars.reportDetails.email)]">
+				<logger level="INFO" doc:name="Logger" doc:id="99717463-3085-42e3-a575-31430ed8abc0" message="Email report enabled"/>
+				<os:retrieve-all doc:name="Retrieve all" doc:id="60545e51-e209-4593-b63a-a54bce9c6ee6" objectStore="Object_store-cpu-usage-reports"/>
+				<ee:transform doc:name="select xls sheet  data" doc:id="70b8eace-5596-416b-8cda-b9472645d304">
+            <ee:message>
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="reportsSummary" ><![CDATA[%dw 2.0
+output application/xlsx header=true
+
+var summary = payload pluck (value,key)  -> {
+		Date: (key as String as DateTime),
+	    averageCPUUtilisationProduction: value.summary.production.avgCPUusage as String {format: "0.00", roundMode:"DOWN"},
+	    totalVcoresProduction: value.summary.production.totalVCores,
+	    vcoresAllocatedProduction: value.summary.production.allocatedVcores,
+	    
+	    averageCPUUtilisationSandbox: value.summary.sandbox.avgCPUusage as String {format: "0.00", roundMode:"DOWN"},
+		totalVcoresSandBox: value.summary.sandbox.totalVCores,
+	    vcoresAllocatedSandbox: value.summary.sandbox.allocatedVcores,
+
+	    averageCPUUtilisationDesign: value.summary.design.avgCPUusage as String {format: "0.00", roundMode:"DOWN"},
+		totalVcoresDesign: value.summary.design.totalVCores, 
+		vcoresAllocatedDesign: value.summary.design.allocatedVcores,
+	} 
+---
+{
+    sheetSummary: summary orderBy($.Date)
+}]]></ee:set-variable>
+					</ee:variables>
+        </ee:transform>
+				<compression:archive doc:name="Archive" doc:id="c0d991c0-c66d-499b-b8c3-191afc49d61a">
+            <compression:entries><![CDATA[#[{
+	'cpu_usage_data.json': payload
+}]]]></compression:entries>
+            <compression:archiver>
+                <compression:zip-archiver />
+            </compression:archiver>
+        </compression:archive>
+				<email:send doc:name="Send" doc:id="039b71e8-4954-4bef-903c-0e53d9129e8f" config-ref="Email_SMTP" toAddresses="#[vars.reportDetails.email.toEmailAddresses]" subject='#["vCore Utilisation Report " ++ now() as Date]' fromAddress="#[vars.reportDetails.email.fromEmailAddress]">
+					<email:body >
+						<email:content ><![CDATA[Test]]></email:content>
+					</email:body>
+					<email:attachments ><![CDATA[#[{
+          	"report.xlsx" : vars.reportsSummary,
+          	"cpu_usage_data.zip" : payload
+}]]]></email:attachments>
+				</email:send>
+				<ee:transform doc:name="Transform Message" doc:id="1cd69a3e-21d6-41bf-b0ab-a2a5fe92721c" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="939ea6e3-ee04-4af8-9208-190cfbe0ad6b" message="Email report not enabled"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

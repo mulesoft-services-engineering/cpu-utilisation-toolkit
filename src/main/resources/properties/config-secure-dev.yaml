@@ -1,0 +1,26 @@
+auth:
+  
+  orgId: "![dFKEUWRSQJdcyUFfy1XPtLPojcDcMUFV8DPUBfawvxU8xEEqQ9jGBLTqDMlrmu8y]"
+  
+  # If auth mode = platform-credentials (ignored, otherwise):
+  username: "![Zjv8nFIUwDlayZ6O7DP31p1zQRfrwfjbkmi5DyNiD38=]"
+  password: "![yqKEWZ57M3XUasumfcwhV35QQl9B5mf5GBon8eY/x8o=]"
+  
+  # If auth mode = connected-app-credentials (ignored, otherwise):
+  clientId: "![Zyt81klI84KFLOFwxO7ypLPgTbx7ph3XUaxcEPECfTdzcAoNmAC6h4Lj4c4AlYNp]"
+  clientSecret: "![VmxpKdO3vUsD1AdyZg3hCpSJqPhxVHArwfrdMrWAgidPrAI8pLlIU6Mxy1Tex5pv]"
+     
+ignoreLists:
+  organizations: ""  #Array: comma-separated values 'orgId1,orgId2'
+  #e64dda65-f623-431f-a191-99de041bb818 - Master
+  #c1ba4b67-8939-46be-b8cb-eb1dd50206cc - Frontier
+  #2849bf84-57c9-4f5f-a7b7-6a705002fd8d - Partner Enablement
+  #14b7b7c0-41e8-41d9-a409-32f920955731 - Role Test
+  environments: "39b2cc92-3d0e-477c-b2a3-0557819f3573,fe732a80-6d2c-4427-8650-fb0262e50ef6"  #Array: comma-separated values 'envId1,envId2'
+  #"39b2cc92-3d0e-477c-b2a3-0557819f3573,fe732a80-6d2c-4427-8650-fb0262e50ef6" 
+  
+  
+#Reports config
+reports:
+  smtp:
+    password: "![f1E+vcDdsCAWIp9GGBvarg==]"

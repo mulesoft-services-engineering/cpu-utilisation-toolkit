@@ -1,0 +1,63 @@
+#%RAML 1.0
+title: CPU Monitoring API
+description: | 
+  The CPU Monitoring API is an extensible Mule application intended to collect and aggregate metrics related to CPU usage of applications deployed on CloudHub, and to generate and publish reports of these metrics to various systems. 
+
+version: v1
+protocols: 
+  - HTTPS
+  - HTTP
+
+securitySchemes:
+  clientId: !include securitySchemes/clientId.raml
+
+traits:
+  receiveAnypointOrgId: !include traits/receiveAnypointOrgId.raml
+  receiveConnectedApp: !include traits/receiveConnectedApp.raml
+  receivePlatformUser: !include traits/receivePlatformUser.raml
+  receiveExcludeLists: !include traits/receiveExcludeLists.raml
+
+uses:
+  dataTypesLibrary: libraries/dataTypes.raml
+
+# Better resource name? /metrics ? /applications/metrics ? 
+/cpu-metrics:
+  is:
+    - receiveAnypointOrgId
+    - receiveConnectedApp
+    - receivePlatformUser
+    - receiveExcludeLists
+  get:
+    description: Retrieves a snapshot of the current vCore usage metrics for applications deployed to CloudHub
+    responses:
+      200:
+        body:
+          application/json:
+            type: dataTypesLibrary.metrics
+            example: !include examples/vCoreMetrics.raml
+    
+/reports:
+  securedBy:
+    - clientId
+  get:
+    description: Gets all of the currently held vCore usage metric reports
+    responses:
+      200:
+        body:
+          application/json:
+            type: dataTypesLibrary.reports[]
+            example: !include examples/reportList.raml
+  post:
+    description: Creates a report of the historic metrics and pushes to the determined location e.g. an email attachment 
+    body:
+      application/json:
+        properties:
+          reports:
+            properties:
+              email?: dataTypesLibrary.emailReport
+    responses:
+      201:
+  delete:
+    description: Deletes all currently held metrics reports 
+    responses:
+      200:

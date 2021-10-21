@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="poller-collector-flow" doc:id="bfff6fa5-b8c9-4391-bbc6-a4465bc148e7" initialState="started">
+		<scheduler doc:name="collector-trigger" doc:id="a715d97c-c4a3-45b8-96b6-5cf44261ef10">
+			<scheduling-strategy>
+				<cron expression="${poller.collector.cron}" timeZone="${poller.collector.timezone}" />
+			</scheduling-strategy>
+		</scheduler>
+		<choice doc:name="if collector enabled" doc:id="f08a52c5-0ce9-44d0-b273-1070f8dc85d4" >
+			<when expression="#[p('poller.collector.enabled')]">
+				<logger level="INFO" doc:name="Logger" doc:id="f7e602ee-0bb6-48ad-9137-c5bca782d2a8" message="Scheduler triggered"/>
+				<flow-ref doc:name="common_set-auth-vars-from-properties" doc:id="b1690169-9dea-401b-b1e8-528e71f53f3a" name="common_set-auth-vars-from-properties"/>
+				<flow-ref doc:name="common_set-start-end-interval-vars" doc:id="46206cb1-3e5e-4ad7-81ac-d57abf083d7e" name="common_set-start-end-interval-vars"/>
+				<flow-ref doc:name="collectors_master-flow" doc:id="ee150e0a-a229-4482-909e-630a8c81d5ed" name="collectors_master-flow"/>
+				<flow-ref doc:name="loaders_master-flow" doc:id="110fcffd-2ce3-4691-9df6-c44c063a5761" name="loaders_master-flow" target="loadersResponse" />
+		<ee:transform doc:name="Transform Message" doc:id="49b5ca84-c70e-4a2a-b985-7b178d216e01" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Successfully published CPU usage statistics"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="collector disabled" doc:id="8e77ec1b-d536-4a1d-8503-da03dbf17384" message="Scheduler disabled"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="poller-reporter-flow" doc:id="210e54b7-c915-47fa-a48d-fdea8d4da6fe">
+		<scheduler doc:name="reporter-trigger" doc:id="a034a917-33e8-477b-a9da-364aa285a9fc" >
+			<scheduling-strategy >
+				<cron expression="${poller.reporter.cron}" timeZone="${poller.reporter.timezone}" />
+			</scheduling-strategy>
+		</scheduler>
+		<choice doc:name="if reported enabled" doc:id="bf415c6c-9d7c-4748-9203-51b66acb5ade" >
+			<when expression="#[p('poller.reporter.enabled')]">
+				<logger level="INFO" doc:name="Logger" doc:id="8860aa13-a270-4b38-8d8c-d8ad99cb9a0c" message="Reporting schedule triggered"/>
+				<flow-ref doc:name="common_set-report-vars-from-properties" doc:id="a5765691-7d6f-4654-97ab-addeab118a27" name="common_set-report-vars-from-properties"/>
+				<flow-ref doc:name="reports_master-flow" doc:id="3723fe77-9fc3-4397-9fc9-41152dbdc39b" name="reports_master-flow"/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="reporter disabled" doc:id="1cfbc26b-c3ca-4c85-9cfd-b6de66bdab1c" message="Reporting schedule disabled"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

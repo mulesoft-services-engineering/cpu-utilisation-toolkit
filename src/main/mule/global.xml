@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd 
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+	<configuration-properties doc:name="Configuration properties" doc:id="c62ef9dd-f0c2-4e2c-8fb1-c8de5cfaa1b9" file="properties/config.yaml" />
+	<configuration-properties doc:name="env_Configuration properties" doc:id="124c7807-a36b-4af3-ae55-98459815f836" file="properties/config-${mule.env}.yaml" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="95c7c155-1b31-4ca9-9e2c-9c2647678500" >
+		<http:listener-connection host="0.0.0.0" port="${http.port}" />
+	</http:listener-config>
+	<apikit:config name="cpu-monitoring-api-config" api="cpu-monitoring-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<http:request-config name="anypoint_HTTP_Request_configuration" doc:name="anypoint_HTTP Request configuration" doc:id="6ce0ce3d-0aa2-47ec-b1b5-d4a68a497d39" enableCookies="false" responseTimeout="${anypoint.platform.responseTimeout}">
+		<http:request-connection host="${anypoint.platform.host}" port="443" protocol="HTTPS" />
+	</http:request-config>
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="dbe913e1-c381-48fd-aaf9-81b01b6adb74" file="properties/config-secure-${mule.env}.yaml" key="${mule.key}" />
+	<os:object-store name="Object_store-cpu-usage-reports" doc:name="Object store" doc:id="4bbe4ea0-9542-406e-84d5-a422d0013ae8" />
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="704f5a2d-7e48-45e2-adf5-96b49f5eeea1" >
+		<email:smtps-connection host="#[vars.reportDetails.email.host]" port="#[vars.reportDetails.email.port]" user="#[vars.reportDetails.email.username]" password="#[vars.reportDetails.email.password]" >
+			<tls:context >
+				<tls:trust-store insecure="true" />
+			</tls:context>
+		</email:smtps-connection>
+	</email:smtp-config>
+</mule>
