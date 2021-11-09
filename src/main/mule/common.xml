@@ -62,7 +62,7 @@ var emailDetails = payload.reports.email
 //should add base64 for email password
 //Additional mapping to be added for any other reports 
 {
-	email: {
+	smtp: {
 		host: emailDetails.smtpHost,
 		port: emailDetails.smtpPort,
 		username: emailDetails.smtpUsername,
@@ -93,7 +93,8 @@ reports reduce ((item, accumulator={}) ->
 			port: p('reports.smtp.port'),
 			username: p('reports.smtp.username'),
 			password: p('secure::reports.smtp.password'),
-			toEmailAddress: p('reports.smtp.toEmailAddress') splitBy ","
+			toEmailAddresses: p('reports.smtp.toEmailAddresses') splitBy ",",
+			fromEmailAddress: p('reports.smtp.fromEmailAddress')
   		}
 		//additional cases can be added for each loader
   		else -> {}

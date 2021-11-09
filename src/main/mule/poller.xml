@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		</scheduler>
 		<choice doc:name="if collector enabled" doc:id="f08a52c5-0ce9-44d0-b273-1070f8dc85d4" >
 			<when expression="#[p('poller.collector.enabled')]">
-				<logger level="INFO" doc:name="Logger" doc:id="f7e602ee-0bb6-48ad-9137-c5bca782d2a8" message="Scheduler triggered"/>
+				<logger level="INFO" doc:name="Collector Enabled" doc:id="f7e602ee-0bb6-48ad-9137-c5bca782d2a8" message="Collector schedule triggered"/>
 				<flow-ref doc:name="common_set-auth-vars-from-properties" doc:id="b1690169-9dea-401b-b1e8-528e71f53f3a" name="common_set-auth-vars-from-properties"/>
 				<flow-ref doc:name="common_set-start-end-interval-vars" doc:id="46206cb1-3e5e-4ad7-81ac-d57abf083d7e" name="common_set-start-end-interval-vars"/>
 				<flow-ref doc:name="collectors_master-flow" doc:id="ee150e0a-a229-4482-909e-630a8c81d5ed" name="collectors_master-flow"/>
@@ -30,11 +30,11 @@ output application/json
 		</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="collector disabled" doc:id="8e77ec1b-d536-4a1d-8503-da03dbf17384" message="Scheduler disabled"/>
+				<logger level="INFO" doc:name="Collector Disabled" doc:id="8e77ec1b-d536-4a1d-8503-da03dbf17384" message="Collector schedule disabled"/>
 			</otherwise>
 		</choice>
 	</flow>
-	<flow name="poller-reporter-flow" doc:id="210e54b7-c915-47fa-a48d-fdea8d4da6fe">
+	<flow name="poller-reporter-flow" doc:id="210e54b7-c915-47fa-a48d-fdea8d4da6fe" initialState="started">
 		<scheduler doc:name="reporter-trigger" doc:id="a034a917-33e8-477b-a9da-364aa285a9fc" >
 			<scheduling-strategy >
 				<cron expression="${poller.reporter.cron}" timeZone="${poller.reporter.timezone}" />
@@ -42,12 +42,12 @@ output application/json
 		</scheduler>
 		<choice doc:name="if reported enabled" doc:id="bf415c6c-9d7c-4748-9203-51b66acb5ade" >
 			<when expression="#[p('poller.reporter.enabled')]">
-				<logger level="INFO" doc:name="Logger" doc:id="8860aa13-a270-4b38-8d8c-d8ad99cb9a0c" message="Reporting schedule triggered"/>
+				<logger level="INFO" doc:name="Reporter Enabled" doc:id="8860aa13-a270-4b38-8d8c-d8ad99cb9a0c" message="Reporting schedule triggered"/>
 				<flow-ref doc:name="common_set-report-vars-from-properties" doc:id="a5765691-7d6f-4654-97ab-addeab118a27" name="common_set-report-vars-from-properties"/>
 				<flow-ref doc:name="reports_master-flow" doc:id="3723fe77-9fc3-4397-9fc9-41152dbdc39b" name="reports_master-flow"/>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="reporter disabled" doc:id="1cfbc26b-c3ca-4c85-9cfd-b6de66bdab1c" message="Reporting schedule disabled"/>
+				<logger level="INFO" doc:name="Reporter Disabled" doc:id="1cfbc26b-c3ca-4c85-9cfd-b6de66bdab1c" message="Reporting schedule disabled"/>
 			</otherwise>
 		</choice>
 	</flow>

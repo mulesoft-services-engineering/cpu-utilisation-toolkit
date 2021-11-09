@@ -139,7 +139,6 @@ fun avgWeightedCpu(cpus, totalCpu) =
 		</ee:transform>
 		<choice doc:name="If there are environments" doc:id="d9136049-208e-4910-9c15-f0eb7fa7b7bb" >
 			<when expression="#[not isEmpty(vars.environments)]">
-				<logger level="INFO" doc:name="Logger" doc:id="1363d04d-6dc2-4c5f-9254-22b4111f214d" message="Metrics aggregated successfully" />
 				<flow-ref doc:name="collectors_cloudhub-apps-metrics-parallel-flow" doc:id="fd379431-1c33-48d0-a92e-33ae9adc31e6" name="collectors_cloudhub-apps-metrics-parallel-flow"/>
 			</when>
 			<otherwise >
