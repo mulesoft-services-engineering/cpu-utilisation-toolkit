@@ -17,6 +17,9 @@ pipeline {
     REGION = "eu-west-2"
   }
   stages {
+    stage('Echo Branch Name') {
+      sh 'echo Branch is $BRANCH_NAME'
+    }
     stage('Build') {
       steps {
             sh 'mvn -B -U -e -V clean -DskipTests package'
