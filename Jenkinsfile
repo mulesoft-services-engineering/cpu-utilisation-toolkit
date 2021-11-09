@@ -15,13 +15,13 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-            bat 'mvn -B -U -e -V clean -DskipTests package'
+            sh 'mvn -B -U -e -V clean -DskipTests package'
       }
     }
 
     stage('Test') {
       steps {
-          bat "mvn test"
+          sh "mvn test"
       }
     }
 
@@ -31,7 +31,7 @@ pipeline {
         APP_NAME = 'vCore'
       }
       steps {
-            bat 'mvn -U -V -e -B -DskipTests deploy -DmuleDeploy -Dapp.runtime="%MULE_VERSION%" -Dusername="%DEPLOY_CREDS_USR%" -Dpassword="%DEPLOY_CREDS_PSW%" -Dcloudhub.application.name="%APP_NAME%" -Denvironment="%ENVIRONMENT%" -DbusinessGroupId="%BG%" -DworkerType="%WORKERTYPE%" -Dworkers="%WORKERS%" -Dregion="%REGION%" -Dmule.env="%MULEENV%" -Dmule.key="%MULEKEY%"'
+            sh 'mvn -U -V -e -B -DskipTests deploy -DmuleDeploy -Dapp.runtime="%MULE_VERSION%" -Dusername="%DEPLOY_CREDS_USR%" -Dpassword="%DEPLOY_CREDS_PSW%" -Dcloudhub.application.name="%APP_NAME%" -Denvironment="%ENVIRONMENT%" -DbusinessGroupId="%BG%" -DworkerType="%WORKERTYPE%" -Dworkers="%WORKERS%" -Dregion="%REGION%" -Dmule.env="%MULEENV%" -Dmule.key="%MULEKEY%"'
       }
     }
 
