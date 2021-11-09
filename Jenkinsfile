@@ -15,7 +15,7 @@ pipeline {
     WORKERTYPE = "Micro"
     WORKERS = 1
 
-    REGION = "region=eu-west-2"
+    REGION = "eu-west-2"
   }
   stages {
     stage('Build') {
