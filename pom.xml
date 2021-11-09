@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.mycompany</groupId>
+	<groupId>com.mulesoft</groupId>
 	<artifactId>vcore-monitor</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
@@ -13,9 +13,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.3.0-20210609</app.runtime>
+		<app.runtime>4.4.0</app.runtime>
 		<mule.maven.plugin.version>3.5.1</mule.maven.plugin.version>
-		<munit.version>2.3.4</munit.version>
+		<munit.version>2.3.6</munit.version>
 	</properties>
 
 	<build>
@@ -25,11 +25,33 @@
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>3.0.0</version>
 			</plugin>
+			
 			<plugin>
-				<groupId>org.mule.tools.maven</groupId>
-				<artifactId>mule-maven-plugin</artifactId>
-				<version>${mule.maven.plugin.version}</version>
-				<extensions>true</extensions>
+			  <groupId>org.mule.tools.maven</groupId>
+			  <artifactId>mule-maven-plugin</artifactId>
+			  <version>${mule.maven.plugin.version}</version>
+			  <extensions>true</extensions>
+			  <configuration>
+			    <cloudHubDeployment>
+			      <uri>https://anypoint.mulesoft.com</uri>
+			      <muleVersion>${app.runtime}</muleVersion>
+			      <!-- <server>cloudhub</server> -->
+			      <username>${username}</username>
+			      <password>${password}</password>
+			      <businessGroupId>${businessGroupId}</businessGroupId>
+			      <applicationName>${cloudhub.application.name}</applicationName>
+			      <environment>${environment}</environment>
+			      <region>${region}</region>
+			      <workers>${workers}</workers>
+			      <workerType>${workerType}</workerType>
+			      <objectStoreV2>true</objectStoreV2>
+			      <properties>
+			        <mule.key>${mule.key}</mule.key>
+			        <mule.env>${mule.env}</mule.env>
+			        <anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
+			      </properties>
+			    </cloudHubDeployment>
+			  </configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.mulesoft.munit.tools</groupId>
