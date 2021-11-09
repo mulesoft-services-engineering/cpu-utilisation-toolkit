@@ -13,7 +13,7 @@ pipeline {
     BG = "e64dda65-f623-431f-a191-99de041bb818"
     MULEENV = "Development"
     WORKERTYPE = "Micro"
-    WORKERS = "1"
+    WORKERS = 1
     REGION = "region=eu-west-2"
   }
   stages {
