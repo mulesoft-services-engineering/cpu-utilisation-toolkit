@@ -35,7 +35,9 @@
 			    <cloudHubDeployment>
 			      <uri>https://anypoint.mulesoft.com</uri>
 			      <muleVersion>${app.runtime}</muleVersion>
-			      <server>cloudhub</server>
+			      <!-- <server>cloudhub</server> -->
+			      <username>${username}</username>
+			      <password>${password}</password>
 			      <businessGroupId>${businessGroupId}</businessGroupId>
 			      <applicationName>${cloudhub.application.name}</applicationName>
 			      <environment>${environment}</environment>
