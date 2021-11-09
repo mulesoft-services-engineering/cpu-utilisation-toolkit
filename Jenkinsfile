@@ -11,7 +11,7 @@ pipeline {
     MULEKEY = credentials('mule-key')
     MULE_VERSION = '4.3.0'
     BG = "e64dda65-f623-431f-a191-99de041bb818"
-    MULEENV = "Development"
+    MULEENV = "dev"
     WORKERTYPE = "Micro"
     WORKERS = 1
 
