@@ -18,7 +18,9 @@ pipeline {
   }
   stages {
     stage('Echo Branch Name') {
-      sh 'echo Branch is $BRANCH_NAME'
+      steps {
+        sh 'echo Branch is $BRANCH_NAME'
+      }
     }
     stage('Build') {
       steps {
