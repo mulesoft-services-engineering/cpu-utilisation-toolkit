@@ -17,6 +17,12 @@ pipeline {
     REGION = "region=eu-west-2"
   }
   stages {
+    stage('Var Test') {
+      steps{
+        sh 'echo user is $DEPLOY_CREDS_USR'
+        sh 'echo BG is $BG'
+      }
+    }
     stage('Build') {
       steps {
             sh 'mvn -B -U -e -V clean -DskipTests package'
