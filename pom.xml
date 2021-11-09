@@ -44,9 +44,11 @@
 			      <region>${region}</region>
 			      <workers>${workers}</workers>
 			      <workerType>${workerType}</workerType>
+			      <objectStoreV2>true</objectStoreV2>
 			      <properties>
 			        <mule.key>${mule.key}</mule.key>
 			        <mule.env>${mule.env}</mule.env>
+			        <anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
 			      </properties>
 			    </cloudHubDeployment>
 			  </configuration>

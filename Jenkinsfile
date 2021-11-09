@@ -32,7 +32,7 @@ pipeline {
      stage('Deploy Development') {
       environment {
         ENVIRONMENT = 'Development'
-        APP_NAME = 'vCore'
+        APP_NAME = 'vcore-monitor-dev'
       }
       steps {
             sh 'mvn -U -V -e -B -DskipTests deploy -DmuleDeploy -Dapp.runtime="$MULE_VERSION" -Dusername="$DEPLOY_CREDS_USR" -Dpassword="$DEPLOY_CREDS_PSW" -Dcloudhub.application.name="$APP_NAME" -Denvironment="$ENVIRONMENT" -DbusinessGroupId="$BG" -DworkerType="$WORKERTYPE" -Dworkers=$WORKERS -Dregion="$REGION" -Dmule.env="$MULEENV" -Dmule.key="$MULEKEY"'
