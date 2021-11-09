@@ -1,5 +1,9 @@
 pipeline {
 
+  tools {
+    maven 'M3'
+  }
+
   agent any
   environment {
     //adding a comment for the commit test
