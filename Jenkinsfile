@@ -6,7 +6,6 @@ pipeline {
 
   agent any
   environment {
-    //adding a comment for the commit test
     DEPLOY_CREDS = credentials('deploy-anypoint-user')
     MULEKEY = credentials('mule-key')
     MULE_VERSION = '4.3.0'
