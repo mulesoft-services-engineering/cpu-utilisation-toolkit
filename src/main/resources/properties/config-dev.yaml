@@ -17,7 +17,7 @@ poller:
       #https://www.freeformatter.com/cron-expression-generator-quartz.html
     timezone: "GMT-3"
   reporter: 
-    enabled: "true"
+    enabled: "false"
     cron: "0 0 18 ? * * *" 
       #Sample for dev "0 17 * * * ? *" At second :00 of minute :17 of every hour
       #Sample for prod "0 0 0 * * ? *" At 00:00:00am every day
@@ -49,7 +49,7 @@ reports:
     host: "smtp.gmail.com"
     port: "465"
     username: "enablementmock@gmail.com"
-    toEmailAddress: "richardmc17@gmail.com"
+    toEmailAddresses: "enablementmock++app@gmail.com"
     fromEmailAddress: "enablementmock@gmail.com"
 
 
