@@ -26,7 +26,7 @@ pipeline {
     stage('Feature') {
 
       when { 
-        branch pattern: "feature\/[\s\S]*", comparator: "REGEXP"
+        branch "feature/*"
       }
 
       environment {
