@@ -15,7 +15,7 @@ http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/cu
 	</flow>
 	<flow name="reports_email" doc:id="5d60e2b3-63c2-4c74-8da3-77813e467224" >
 		<choice doc:name="Choice" doc:id="c24945c6-cbca-4385-8dc3-7e5b6d3f0788" >
-			<when expression="#[!isEmpty(vars.reportDetails.email)]">
+			<when expression="#[!isEmpty(vars.reportDetails.smtp.toEmailAddresses)]">
 				<logger level="INFO" doc:name="Logger" doc:id="99717463-3085-42e3-a575-31430ed8abc0" message="Email report enabled"/>
 				<os:retrieve-all doc:name="Retrieve all" doc:id="60545e51-e209-4593-b63a-a54bce9c6ee6" objectStore="Object_store-cpu-usage-reports"/>
 				<ee:transform doc:name="select xls sheet  data" doc:id="70b8eace-5596-416b-8cda-b9472645d304">
@@ -57,7 +57,7 @@ var summary = payload pluck (value,key)  -> {
                 <compression:zip-archiver />
             </compression:archiver>
         </compression:archive>
-				<email:send doc:name="Send" doc:id="039b71e8-4954-4bef-903c-0e53d9129e8f" config-ref="Email_SMTP" toAddresses="#[vars.reportDetails.email.toEmailAddresses]" subject='#["vCore Utilisation Report " ++ now() as Date]' fromAddress="#[vars.reportDetails.email.fromEmailAddress]">
+				<email:send doc:name="Send" doc:id="039b71e8-4954-4bef-903c-0e53d9129e8f" config-ref="Email_SMTP" toAddresses="#[vars.reportDetails.smtp.toEmailAddresses]" subject='#["vCore Utilisation Report " ++ now() as Date]' fromAddress="#[vars.reportDetails.smtp.fromEmailAddress]">
 					<email:body >
 						<email:content ><![CDATA[Test]]></email:content>
 					</email:body>

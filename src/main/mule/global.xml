@@ -26,7 +26,7 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="dbe913e1-c381-48fd-aaf9-81b01b6adb74" file="properties/config-secure-${mule.env}.yaml" key="${mule.key}" />
 	<os:object-store name="Object_store-cpu-usage-reports" doc:name="Object store" doc:id="4bbe4ea0-9542-406e-84d5-a422d0013ae8" />
 	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="704f5a2d-7e48-45e2-adf5-96b49f5eeea1" >
-		<email:smtps-connection host="#[vars.reportDetails.email.host]" port="#[vars.reportDetails.email.port]" user="#[vars.reportDetails.email.username]" password="#[vars.reportDetails.email.password]" >
+		<email:smtps-connection host="#[vars.reportDetails.smtp.host]" port="#[vars.reportDetails.smtp.port]" user="#[vars.reportDetails.smtp.username]" password="#[vars.reportDetails.smtp.password]" >
 			<tls:context >
 				<tls:trust-store insecure="true" />
 			</tls:context>
