@@ -27,8 +27,12 @@ This schedule is designed to be run on a frequent basis e.g. every 30-60 minutes
 
 If enabled, they are also stored in an Object Store v2 instance in order to facilitate Periodic Reporting as described below. 
 
+![Flowchart](https://user-images.githubusercontent.com/58299919/142214828-7af0e41b-9c25-4c76-966c-a4022457d8a1.jpeg)
+
 ## Poller - Periodic Reporting
 Some organisations wish for a longer term view of CPU usage e.g. a once per month report. When this schedule is triggered, it reads all reports stored in an Object Store v2 instance, formats these into an Excel Spreadsheet, and emails this as an attachment to a previously configured list of email addresses. As with the metric loading, reporting is designed to be extensible so any chosen method can be implemented and configured as needed. 
+
+![Flowchart (1)](https://user-images.githubusercontent.com/58299919/142214849-c68fd22d-a490-436d-afb6-a13868bdb0ec.jpeg)
 
 # Installation 
 
