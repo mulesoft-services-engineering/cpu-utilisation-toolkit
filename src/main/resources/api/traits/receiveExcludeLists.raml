@@ -1,0 +1,13 @@
+#%RAML 1.0 Trait
+description: A selection of query parameters which can be provided to exclude certain units from metrics 
+queryParameters:
+  excludeBusinessGroupList:
+    description: A list of the business group IDs to retrieve metrics for. If not provided, all available Business Groups will be used 
+    type: array
+    items: string
+    required: false
+  excludeEnvironmentList:
+    description: A list of the environment IDs to retrieve metrics for. If not provided, all available Business Groups will be used 
+    type: array
+    items: string
+    required: false

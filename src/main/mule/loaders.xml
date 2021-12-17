@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:custom-metrics="http://www.mulesoft.org/schema/mule/custom-metrics" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/custom-metrics http://www.mulesoft.org/schema/mule/custom-metrics/current/mule-custom-metrics.xsd">
+	
+	<flow name="loaders_master-flow" doc:id="e7bba13c-dcd6-4b3d-853c-d42f2094d552" >
+		<scatter-gather doc:name="Parallel loaders" doc:id="1511373a-a8f0-4935-9384-f3139b138435" >
+			<route >
+				<flow-ref doc:name="loaders_object-store" doc:id="daad259d-6a7c-42ee-a5fe-bdb080dd203c" name="loaders_object-store"/>
+			</route>
+			<route >
+				<flow-ref doc:name="loaders_anypoint-monitoring" doc:id="55d09369-8168-4270-ba37-3f4aa547effb" name="loaders_anypoint-monitoring"/>
+			</route>
+		</scatter-gather>
+	</flow>
+	<flow name="loaders_object-store" doc:id="c8fcc500-08ed-47e8-99cc-46ac4544fcbb" >
+		<choice doc:name="Choice" doc:id="70de518e-da60-40d7-a77d-a608ea5f1a73" >
+			<when expression="${loaders.osv2.enabled}">
+				<logger level="DEBUG" doc:name="OSv2 Loader Enabled" doc:id="c0d11fcc-52ce-44f3-af12-5cebe524f363" message="OSv2 Loader Enabled"/>
+				<os:store doc:name="Periodic CPU usage report" doc:id="7c94bb48-9304-4646-8118-66709f8faa1a" key="#[payload.summary.endDatetime]" failIfPresent="true" objectStore="Object_store-cpu-usage-reports" />
+			</when>
+			<otherwise >
+				<logger level="DEBUG" doc:name="OSv2 Loader Disabled" doc:id="99149303-4872-460b-86c8-dd44a98c2399" message="OSv2 Loader Disabled"/>
+			</otherwise>
+		</choice>
+	</flow>
+	<flow name="loaders_anypoint-monitoring" doc:id="5c74225e-a70b-4b4b-bf25-86547ea2dc5d" >
+		<choice doc:name="Choice" doc:id="6870c34f-d98e-4d45-9e61-996272f80898" >
+			<when expression="${loaders.am.enabled}">
+				<logger level="DEBUG" doc:name="Anypoint Monitoring Loader Enabled" doc:id="e9cfe59e-448c-4ac6-8aed-f662d41b2fde" message="Anypoint Monitoring Loader Enabled"/>
+				<custom-metrics:send doc:name="Summary Custom Metric" doc:id="fdd95e81-7684-4c7b-8f6f-8f9a46aabf14" metricName="summaryCpuUsage">
+					<custom-metrics:dimensions >
+						<custom-metrics:dimension dimensionName="reportLevel" value="Summary" />
+					</custom-metrics:dimensions>
+					<custom-metrics:facts>
+						<custom-metrics:fact factName="summaryTotalVcoresProduction" value="#[payload.summary.production.totalVCores]" />
+						<custom-metrics:fact factName="summaryAllocatedVcoresProduction" value="#[payload.summary.production.allocatedVcores]" />
+						<custom-metrics:fact factName="summaryAverageCPUUtilisationProduction" value="#[payload.summary.production.avgCPUusage]" />
+						
+						<custom-metrics:fact factName="summaryTotalVcoresSandBox" value="#[payload.summary.sandbox.totalVCores]" />
+						<custom-metrics:fact factName="summaryAllocatedVcoresSandbox" value="#[payload.summary.sandbox.allocatedVcores]" />
+						<custom-metrics:fact factName="summaryAverageCPUUtilisationSandbox" value="#[payload.summary.sandbox.avgCPUusage]" />
+						
+						<custom-metrics:fact factName="summaryTotalVcoresDesign" value="#[payload.summary.design.totalVCores]" />
+		                <custom-metrics:fact factName="summaryAllocatedVcoresDesign" value="#[payload.summary.design.allocatedVcores]" />
+		                <custom-metrics:fact factName="summaryAverageCPUUtilisationDesign" value="#[payload.summary.design.avgCPUusage]" />
+					</custom-metrics:facts>
+				</custom-metrics:send>
+				<parallel-foreach doc:name="For Each BG" doc:id="e1051ea7-c7aa-4915-ae1b-352609e884f2" collection="#[payload.businessGroupLevelDetails]">
+					<custom-metrics:send doc:name="BG Specific Custom Metrics" doc:id="52eada75-6f24-49f7-bc04-67bdf64cbac2" metricName="bgCpuUsage" throwOnValidationFailure="true">
+			<custom-metrics:dimensions>
+				<custom-metrics:dimension dimensionName="businessGroupId" value="#[payload.businessGroupId]" />
+				<custom-metrics:dimension dimensionName="businessGroupName" value="#[payload.businessGroupName replace /([^a-zA-Z0-9-_:.\/])/ with '_']" />
+			</custom-metrics:dimensions>
+			<custom-metrics:facts>
+				<custom-metrics:fact factName="totalVcoresProduction" value="#[payload.production.totalVCores]" />
+				<custom-metrics:fact factName="allocatedVcoresProduction" value="#[payload.production.allocatedVcores]" />
+				<custom-metrics:fact factName="averageCPUUtilisationProduction" value="#[payload.production.avgWeightedCpu]" />
+				
+				<custom-metrics:fact factName="totalVcoresSandBox" value="#[payload.sandbox.totalVCores]" />
+				<custom-metrics:fact factName="allocatedVcoresSandbox" value="#[payload.sandbox.allocatedVcores]" />
+				<custom-metrics:fact factName="averageCPUUtilisationSandbox" value="#[payload.sandbox.avgWeightedCpu]" />
+				
+				<custom-metrics:fact factName="totalVcoresDesign" value="#[payload.design.totalVCores]" />
+				<custom-metrics:fact factName="allocatedVcoresDesign" value="#[payload.design.allocatedVcores]" />
+				<custom-metrics:fact factName="averageCPUUtilisationDesign" value="#[payload.design.avgWeightedCpu]" />
+			</custom-metrics:facts>
+		</custom-metrics:send>
+				</parallel-foreach>
+			</when>
+			<otherwise >
+				<logger level="DEBUG" doc:name="Anypoint Monitoring Loader Disabled" doc:id="6c6ea1e9-3678-4287-9c6b-c0690f399933" message="Anypoint Monitoring Loader Disabled"/>
+			</otherwise>
+		</choice>
+	</flow>
+</mule>

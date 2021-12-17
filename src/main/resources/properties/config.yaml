@@ -1,0 +1,40 @@
+# API config
+api:
+  host: "0.0.0.0"
+  path: "/api/*"
+  
+#Anypoint Platform API Config
+anypoint:
+  platform:
+    #Change to anypoint.mulesoft.com  if using the US Control Plane 
+    #Change to eu1.anypoint.mulesoft.com  if using the EU Control Plane 
+    #Change to gov.anypoint.mulesoft.com  if using Gov Cloud
+    host: "anypoint.mulesoft.com" 
+    apis:
+      coreservices:
+        maxConcurrency: "100"
+        login:
+          path: "/accounts/login"
+        token:
+          path: "/accounts/api/v2/oauth2/token"
+        hierarchy:
+          path: "/accounts/api/organizations/{orgId}/hierarchy"
+        environments:
+          path: "/accounts/api/organizations/{orgId}/environments"
+        usage:
+          path: "/accounts/api/cs/organizations/{orgId}/usage"
+        members:
+          path: "/accounts/api/organizations/{orgId}/members"
+          limit: "1000"
+          offset: "0"
+        rolegroups:
+          path: "/accounts/api/organizations/{orgId}/rolegroups"
+          limit: "1000"
+          offset: "0"
+      cloudhub:
+        maxConcurrency: "100"
+        apps:
+          path: "/cloudhub/api/v2/applications"
+        stats:
+          path: "/dashboardStats"
+          statistics: "cpu" #comma separated list of statistics to be returned - only cpu supported in first iteration 

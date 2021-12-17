@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
+
+
+	<flow name="anypoint-api-calls_login" doc:id="c336bb42-e18a-4f7f-9c10-d210024c443c" doc:description="Executes the API call to retrieve an access token">
+		<logger level="DEBUG" doc:name="Logger" doc:id="fde73538-32e8-4c37-bc8e-a343e50f0522" message="Calling Coreservices - Login" />
+		<choice doc:name="Choice" doc:id="917c49c1-a155-41e6-abfe-8e320fc7b501" >
+			<when expression="#[vars.authMode == 'connected-app-credentials']">
+				<ee:transform doc:name="Build Connected App Credentials Login Request" doc:id="5eaea0ca-f420-4d6f-8b36-7a7001ab19b8">
+			<ee:message>
+						<ee:set-payload resource="dw/anypoint/coreservices-build-connected-app-login-request.dwl" />
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="Build Platform Credentials Login Request" doc:id="417f5d0e-fc59-4df9-a9d0-af43957e772f" >
+					<ee:message >
+						<ee:set-payload resource="dw/anypoint/coreservices-build-platform-login-request.dwl" />
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<http:request method="POST" doc:name="Post Login Request" doc:id="560a71f8-55b6-402b-b0e6-cfd411340797" config-ref="anypoint_HTTP_Request_configuration"
+			path="#[if (vars.authMode == 'connected-app-credentials')
+  Mule::p('anypoint.platform.apis.coreservices.token.path')
+else
+  Mule::p('anypoint.platform.apis.coreservices.login.path')]" >
+		</http:request>
+			
+		<logger level="DEBUG" doc:name="Logger" doc:id="94b6e2e7-72f9-4957-8c55-103ad0fe8765" message='#["Coreservices - Login, Response Status Code:" ++ attributes.statusCode]' />
+	</flow>
+
+	<flow name="anypoint-api-calls_environments" doc:id="cb45e4dc-7fd3-476d-aff3-7c0a30556088" maxConcurrency="${anypoint.platform.apis.coreservices.maxConcurrency}" doc:description="Executes and API call to get the list of environments for a busines group">
+		<logger level="DEBUG" doc:name="Logger" doc:id="c04d063d-9f26-41c8-9f2c-efd64bc5a457" message="Calling Coreservices - Environments" />
+		<http:request method="GET" doc:name="Get Environments Request" doc:id="ea3a4010-08c1-44e9-b9d4-a82201dbb162" config-ref="anypoint_HTTP_Request_configuration"
+			path="${anypoint.platform.apis.coreservices.environments.path}">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"Authorization" : "Bearer " ++ vars.token
+}]]]></http:headers>
+			<http:uri-params><![CDATA[#[output application/java
+---
+{
+	"orgId" : vars.orgId
+}]]]></http:uri-params>
+		</http:request>
+		<logger level="DEBUG" doc:name="Logger" doc:id="44625425-13b2-42b6-9886-1bbbe2de07fb" message='#["Coreservices - Environments, Response Status Code:" ++ attributes.statusCode]' />
+	</flow>
+	
+	<flow name="anypoint-api-calls_organizations" doc:id="cef7e93b-b2dc-4ff3-8cf4-582ead99cfcc" maxConcurrency="${anypoint.platform.apis.coreservices.maxConcurrency}">
+		<logger level="DEBUG" doc:name="Logger" doc:id="224fabbf-19d2-4f85-894f-85e95170afe9" message="Calling Coreservices - Hierarchy" />
+		<http:request method="GET" doc:name="Get Hierarchy Request" doc:id="dc7dbe11-676b-4de2-8622-21a22e01f67a" config-ref="anypoint_HTTP_Request_configuration"
+			path="${anypoint.platform.apis.coreservices.hierarchy.path}" doc:description="Executes an API call to get the list and hierarchy of business groups within an org ">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"Authorization" : "Bearer " ++ vars.token
+}]]]></http:headers>
+			<http:uri-params><![CDATA[#[output application/java
+---
+{
+	"orgId" : vars.masterOrgId
+}]]]></http:uri-params>
+		</http:request>
+		<logger level="DEBUG" doc:name="Logger" doc:id="30b6eab1-e157-488d-a99e-c530e720923f" message='#["Coreservices - Hierarchy, Response Status Code:" ++ attributes.statusCode]' />
+	</flow>
+	<flow name="anypoint-api-calls_cloudhub-apps" doc:id="fd0bceab-aed6-4aae-a288-1de511d30633" maxConcurrency="${anypoint.platform.apis.cloudhub.maxConcurrency}">
+		<logger level="DEBUG" doc:name="Logger" doc:id="3bccefac-f830-42f0-a656-05ae4fd4b8bc" message="Calling CloudHub - Applications" />
+		<http:request method="GET" doc:name="Get Applications Request" doc:id="794ee812-2417-4806-bc12-361742648865" config-ref="anypoint_HTTP_Request_configuration"
+			path="${anypoint.platform.apis.cloudhub.apps.path}">
+			<http:headers><![CDATA[#[output application/java
+---
+{
+	"X-ANYPNT-ENV-ID" : vars.environmentId,
+	"Authorization" : "Bearer " ++ vars.token
+}]]]></http:headers>
+			<http:uri-params><![CDATA[#[output application/java
+---
+{
+	"orgId" : vars.orgId
+}]]]></http:uri-params>
+		</http:request>
+		<logger level="DEBUG" doc:name="Logger" doc:id="955d69a8-6808-4af3-84be-39e00fbf8f08" message='#["CloudHub - Applications, Response Status Code:" ++ attributes.statusCode]' />
+	</flow>
+	<flow name="anypoint-api-calls_ch-app-stats" doc:id="3871160e-5714-418e-a141-f49faafd328c" maxConcurrency="${anypoint.platform.apis.cloudhub.maxConcurrency}">
+		<logger level="DEBUG" doc:name="Logger" doc:id="78aa139a-8979-4fbd-828a-f46d4a1d92eb" message="Calling CloudHub - Application Stats" />
+		<http:request method="GET" doc:name="Request Stats" doc:id="0b3d6926-5a2a-4ebb-8608-fc1649fdba72" config-ref="anypoint_HTTP_Request_configuration" path="#[p('anypoint.platform.apis.cloudhub.apps.path') ++ &quot;/&quot; ++ payload.domain ++ p('anypoint.platform.apis.cloudhub.stats.path')]" responseTimeout="240000">
+                <http:headers><![CDATA[#[output application/java
+---
+{
+	"x-anypnt-org-id" : vars.orgId,
+	"X-ANYPNT-ENV-ID" : vars.environmentId,
+	"Authorization" : "Bearer " ++ vars.token,
+	"Accept" : "application/json"
+}]]]></http:headers>
+                <http:query-params><![CDATA[#[output application/java
+---
+{
+	"endDate" : vars.endDate,
+	"startDate" : vars.startDate,
+	"interval" : vars.interval,
+	"statistics" : p('anypoint.platform.apis.cloudhub.stats.statistics')
+}]]]></http:query-params>
+            </http:request>
+		<logger level="DEBUG" doc:name="Logger" doc:id="c1e6d36b-8b35-4e42-8e09-12718f2b3c7e" message='#["CloudHub - Application Stats, Response Status Code:" ++ attributes.statusCode]' />
+		<error-handler>
+            <on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="4797da82-9bb4-4aaf-a42f-774dda39674b">
+                <logger level="INFO" doc:name="Logger" doc:id="ba55a714-3310-4d7e-8de1-6d03e49e8185" message="ERROR!" />
+            </on-error-continue>
+        </error-handler>
+	</flow>
+</mule>

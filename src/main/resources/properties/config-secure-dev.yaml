@@ -1,0 +1,21 @@
+auth:
+  
+  orgId: "![/x0B2QthwTDiGv+eKVLCY3NbrDXcN33XNkx35SPdFWk=]"
+  
+  # If auth mode = platform-credentials (ignored, otherwise):
+  username: "![Zjv8nFIUwDlayZ6O7DP31p1zQRfrwfjbkmi5DyNiD38=]"
+  password: "![yqKEWZ57M3XUasumfcwhV35QQl9B5mf5GBon8eY/x8o=]"
+  
+  # If auth mode = connected-app-credentials (ignored, otherwise):
+  clientId: "![vKd3M6DBDspgrtnNNiyhysj9JKrw3rEp5HhDZSSam88=]"
+  clientSecret: "![vKd3M6DBDspgrtnNNiyhyp3ZSCYHGhalSvT1gYBvkzY=]"
+     
+ignoreLists:
+  organizations: ""  #Array: comma-separated values 'orgId1,orgId2'
+  environments: ""  #Array: comma-separated values 'envId1,envId2' 
+  
+  
+#Reports config
+reports:
+  smtp:
+    password: "![vKd3M6DBDspgrtnNNiyhyt820+weS4QCTROWSZumn1TqUsW4hlQr5Ts/hIH0Dscf]"

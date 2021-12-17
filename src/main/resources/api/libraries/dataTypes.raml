@@ -1,0 +1,103 @@
+#%RAML 1.0 Library
+types:
+  environmentGroup:
+    properties:
+      applications:
+        type: array
+        items:
+          properties:
+            application:
+              type: string
+              example: "customer-exp-api"
+            environment:
+              type: string
+              example: Production
+            environmentType:
+              type: string
+              example: Production
+            businessGroup:
+              type: string
+              example: "aaaabb11-a123-b345-c678-dddd8888askj"
+            workerType:
+              type: number
+              example: 0.1
+            workerAmount:
+              type: number
+              example: 2
+            status:
+              type: string
+              example: STARTED
+            averageCPUUtilisation:
+              type: number
+              example: 13.317793796267745
+            endDate:
+              type: datetime
+              example: "2021-10-20T11:59:20.923Z"
+            startDate:
+              type: datetime
+              example: "2021-10-20T10:59:20.924Z"
+      totalVCores: 
+        type: number
+        example: 2
+      allocatedVcores: 
+        type: number
+        example: 0.3
+      avgWeightedCpu:
+        type: number
+        example: 12.228793796267745
+  summary:
+    properties:
+      totalVCores:
+        type: number
+        example: 4
+      allocatedVcores: 
+        type: number
+        example: 2
+      avgCPUusage: 
+        type: number
+        example: 7.8210614917100344
+  orgSummary:
+    properties:   
+      production: summary
+      sandbox: summary
+      design: summary
+      startDatetime: 
+        type: datetime
+        example: "2021-10-20T10:59:20.924Z"
+      endDatetime:
+        type: datetime
+        example: "2021-10-20T11:59:20.923Z"
+  detail:
+    properties:  
+      businessGroupName:
+        type: string
+        example: MuleSoft
+      businessGroupId:
+        type: string
+        example: "aaaabb11-a123-b345-c678-dddd8888askj"
+      production: environmentGroup
+      sandbox: environmentGroup
+      design: environmentGroup
+          
+  metrics:
+    properties:
+      summary: orgSummary
+      businessGroupLevelDetails:
+        type: array
+        items: detail
+  reports:
+    properties:
+      reportTimestamp:
+        type: datetime
+        example: "2021-10-19T03:00:11.113Z"
+      summary: orgSummary
+      businessGroupLevelDetails:
+        type: array
+        items: detail
+
+  emailReport:
+    properties:
+      toEmailAddresses:
+        type: array
+        items: string
+        example: ["myemail@gmail.com", "a-cc-mail@email.com"]
