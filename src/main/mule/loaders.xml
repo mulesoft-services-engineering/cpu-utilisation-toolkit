@@ -40,7 +40,7 @@ http://www.mulesoft.org/schema/mule/custom-metrics http://www.mulesoft.org/schem
 						<custom-metrics:fact factName="summaryAllocatedVcoresProduction" value="#[payload.summary.production.allocatedVcores]" />
 						<custom-metrics:fact factName="summaryAverageCPUUtilisationProduction" value="#[payload.summary.production.avgCPUusage]" />
 						
-						<custom-metrics:fact factName="summaryTotalVcoresSandBox" value="#[payload.summary.sandbox.totalVCores]" />
+						<custom-metrics:fact factName="summaryTotalVcoresSandbox" value="#[payload.summary.sandbox.totalVCores]" />
 						<custom-metrics:fact factName="summaryAllocatedVcoresSandbox" value="#[payload.summary.sandbox.allocatedVcores]" />
 						<custom-metrics:fact factName="summaryAverageCPUUtilisationSandbox" value="#[payload.summary.sandbox.avgCPUusage]" />
 						
@@ -60,7 +60,7 @@ http://www.mulesoft.org/schema/mule/custom-metrics http://www.mulesoft.org/schem
 				<custom-metrics:fact factName="allocatedVcoresProduction" value="#[payload.production.allocatedVcores]" />
 				<custom-metrics:fact factName="averageCPUUtilisationProduction" value="#[payload.production.avgWeightedCpu]" />
 				
-				<custom-metrics:fact factName="totalVcoresSandBox" value="#[payload.sandbox.totalVCores]" />
+				<custom-metrics:fact factName="totalVcoresSandbox" value="#[payload.sandbox.totalVCores]" />
 				<custom-metrics:fact factName="allocatedVcoresSandbox" value="#[payload.sandbox.allocatedVcores]" />
 				<custom-metrics:fact factName="averageCPUUtilisationSandbox" value="#[payload.sandbox.avgWeightedCpu]" />
 				
