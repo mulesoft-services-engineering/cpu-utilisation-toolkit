@@ -35,7 +35,15 @@ uses:
           application/json:
             type: dataTypesLibrary.metrics
             example: !include examples/vCoreMetrics.raml
-    
+  
+  post:
+    body:
+      application/json:
+        type: dataTypesLibrary.loaders
+        example: !include examples/strategies.raml
+    responses:
+      201:    
+
 /reports:
   securedBy:
     - clientId

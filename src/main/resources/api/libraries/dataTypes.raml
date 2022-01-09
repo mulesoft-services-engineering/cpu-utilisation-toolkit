@@ -101,3 +101,14 @@ types:
         type: array
         items: string
         example: ["myemail@gmail.com", "a-cc-mail@email.com"]
+
+  anypointMonitoringLoader:
+    properties:
+      enabled: boolean
+  osv2Loader:
+    properties:
+      enabled: boolean
+  loaders:
+    properties:
+      am?: anypointMonitoringLoader
+      osv2?: osv2Loader
