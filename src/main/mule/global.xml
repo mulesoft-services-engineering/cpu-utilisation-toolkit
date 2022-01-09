@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:email="http://www.mulesoft.org/schema/mule/email"
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email"
 	xmlns:tls="http://www.mulesoft.org/schema/mule/tls"
 	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
-	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
-	xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd 
 http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd 
 http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
-http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd">
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
 	<configuration-properties doc:name="Configuration properties" doc:id="c62ef9dd-f0c2-4e2c-8fb1-c8de5cfaa1b9" file="properties/config.yaml" />
 	<configuration-properties doc:name="env_Configuration properties" doc:id="124c7807-a36b-4af3-ae55-98459815f836" file="properties/config-${mule.env}.yaml" />
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="95c7c155-1b31-4ca9-9e2c-9c2647678500" >
@@ -32,4 +33,5 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 			</tls:context>
 		</email:smtps-connection>
 	</email:smtp-config>
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="651033a5-e1f3-487b-9708-a29b03fb93ea" flowRef="cpu-monitoring-api-main" />
 </mule>
