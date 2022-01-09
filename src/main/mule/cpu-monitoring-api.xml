@@ -164,4 +164,12 @@ payload pluck ((value, key, index) -> {
 		<set-payload value="#[null]" doc:name="Set Payload" doc:id="769fa5d9-0ef8-4dc0-b8ba-c6846b750c04" />
 		
     </flow>
+    <flow name="post:\cpu-metrics:application\json:cpu-monitoring-api-config">
+        <flow-ref doc:name="common_set-auth-vars-from-headers" doc:id="fc05e76d-2c32-43a2-aad2-0d8db51a9777" name="common_set-auth-vars-from-headers" />
+		<flow-ref doc:name="common_set-start-end-interval-vars" doc:id="323eb926-cad5-40e6-986a-3bc29cb2719e" name="common_set-start-end-interval-vars" />
+		<flow-ref doc:name="common_set-loader-vars-from-payload" doc:id="b02ddd87-adf7-4f1d-bb26-5ca446b8a83d" name="common_set-loader-vars-from-payload" />
+		<flow-ref doc:name="collectors_master-flow" doc:id="4ae12e22-b390-4688-b5ed-18cabe5e3197" name="collectors_master-flow" />
+		<flow-ref doc:name="loaders_master-flow" doc:id="62ce9ff9-92f8-488c-b460-eadf4e72ecb3" name="loaders_master-flow" />
+		<set-payload value="#[null]" doc:name="Set Payload" doc:id="bef9998c-671c-4356-b056-59c1711d26bc" />
+    </flow>    
 </mule>

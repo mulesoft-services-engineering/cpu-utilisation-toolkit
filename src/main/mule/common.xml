@@ -105,4 +105,16 @@ reports reduce ((item, accumulator={}) ->
 	    </ee:variables>
 	  </ee:transform>
 	</flow>
+	<flow name="common_set-loader-vars-from-payload" doc:id="bf184844-893b-4128-8afb-ba206a063afc">
+	  <ee:transform doc:name="Set Loader Vars from Payload" doc:id="e26efe71-3460-427e-a409-ba19e79b8a06" >
+	    <ee:message >
+	    </ee:message>
+	    <ee:variables >
+				<ee:set-variable variableName="loaderDetails" ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-variable>
+	    </ee:variables>
+	  </ee:transform>
+	</flow>	
 </mule>
