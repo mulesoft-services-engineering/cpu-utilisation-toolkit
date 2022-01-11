@@ -15,11 +15,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<munit-tools:with-attributes>
 					<munit-tools:with-attribute whereValue="Post Login Request" attributeName="doc:name" />
 				</munit-tools:with-attributes>
-				<munit-tools:then-return>
-					<munit-tools:payload
-						value="#[MunitTools::getResourceAsString('examples/responses/anypoint/platform/coreservices/post-login-response.json')]" />
-					<munit-tools:attributes value='#[{"statusCode": 200}]' />
-				</munit-tools:then-return>
+			<munit-tools:then-return >
+				<munit-tools:payload value="#[MunitTools::getResourceAsString('examples/responses/anypoint/platform/coreservices/post-login-response.json')]" mediaType="application/json" />
+				<munit-tools:attributes value='#[{"statusCode": 200}]' />
+			</munit-tools:then-return>
 			</munit-tools:mock-when>
 			<munit-tools:mock-when doc:name="Mock when Get Hierarchy Request" doc:id="8601f049-c2be-4302-92a2-1c1a5d5fb357"
 				processor="http:request">
@@ -57,15 +56,19 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 					<munit-tools:attributes value='#[{"statusCode": 200}]' />
 				</munit-tools:then-return>
 			</munit-tools:mock-when>
+		<munit-tools:mock-when doc:name="Mock when Get App Stats Request" doc:id="c0e55ea1-5476-4bb0-8ac2-a08d10f30245" processor="http:request" >
+			<munit-tools:with-attributes >
+				<munit-tools:with-attribute whereValue="Request Stats" attributeName="doc:name" />
+			</munit-tools:with-attributes>
+			<munit-tools:then-return >
+				<munit-tools:payload value="#[MunitTools::getResourceAsString('examples/responses/anypoint/platform/cloudhub/get-app-stats-response.json')]" mediaType="application/json" />
+				<munit-tools:attributes value='#[{"statusCode": 200}]' />
+			</munit-tools:then-return>
+		</munit-tools:mock-when>
 	</munit:before-test>
-	<munit:test name="get-cpu-metrics-test" doc:id="2d59e154-abb2-4401-8644-c0e72cfa8941" >
-		<munit:behavior >
-			<munit:set-event doc:name="Set Input" doc:id="eb90757b-4bcd-4166-8df3-b39e2428cbae" >
-				<munit:payload value="#[readUrl('classpath://getcpumetricstest/set-event_payload.dwl')]" encoding="UTF-8" />
-				<munit:attributes value="#[readUrl('classpath://getcpumetricstest/set-event_attributes.dwl')]" />
-			</munit:set-event>
-		</munit:behavior>
+	<munit:test name="get-cpu-metrics-test" doc:id="2d59e154-abb2-4401-8644-c0e72cfa8941" timeOut="1200000">
 		<munit:execution >
+			<set-variable value="#[MunitTools::getResourceAsString('examples/responses/get-cpu-metrics-response-payload.json')]" doc:name="Set Expected Response Payload" doc:id="ee263c06-cd1f-4701-98a9-6b6e3c3f2971" variableName="expectedResponse" mimeType="application/json" />
 			<ee:transform doc:name="Set Mocked Attributes" doc:id="0fd84368-c5bd-4b51-92a8-738ae2d2be96" >
 				<ee:message >
 					<ee:set-attributes resource="dw/mock-platform-metrics-call-attributes-connected-app.dwl" />
@@ -73,15 +76,10 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<ee:variables >
 				</ee:variables>
 			</ee:transform>
-			<flow-ref doc:name="Flow-ref to cpu-monitoring-api-main" doc:id="a0a07905-82b9-4e42-8bd9-b3502bf215e7" name="cpu-monitoring-api-main"/>
+			<flow-ref doc:name="Flow-ref to get:\cpu-metrics:cpu-monitoring-api-config" doc:id="a0a07905-82b9-4e42-8bd9-b3502bf215e7" name="get:\cpu-metrics:cpu-monitoring-api-config"/>
 		</munit:execution>
 		<munit:validation >
-			<munit-tools:assert doc:name="Assert payload" doc:id="75f1073b-0c3b-4a3b-b937-cae41cf63852" message="The payload does not match">
-				<munit-tools:that ><![CDATA[#[%dw 2.0
-import getcpumetricstest::assert_expression_payload
----
-assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
-			</munit-tools:assert>
+			<munit-tools:assert-that doc:name="Assert Expected Response" doc:id="72a1d3a6-1a93-4b66-83ac-9096732c9c78" expression='#[payload]' is='#[MunitTools::equalTo(vars.expectedResponse)]' message="The response payload is not the expected" />
 		</munit:validation>
 	</munit:test>
 
