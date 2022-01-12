@@ -1,5 +1,5 @@
-# CloudHub CPU Monitoring Framework - name TBC
-The CloudHub CPU Monitoring Framework is a Mule application intended to collect, aggregate and report on CPU usage statistics for CloudHub deployed Mule applications. 
+# CPU Utilisation Toolkit
+The CPU Utilisation Toolkit is a Mule application intended to collect, aggregate and report on CPU usage statistics for CloudHub deployed Mule applications. 
 
 The framework is not an alternative to the [Metrics Toolkit](https://github.com/mulesoft-catalyst/metrics-toolkit/ "Metrics Toolkit"). Rather it serves a more specific funtion, monitoring CPU usage for each application and providing Business Group, Environment and application level information.
 
@@ -17,13 +17,18 @@ A secondary function exists which allows for less frequent reporting of a summar
 These functions are exposed in two ways, an API for realtime interactions, and two schedulers for polling operations. 
 
 ## API
-The toolkit implements an API which allows consumers to retrieve a snapshot of CPU usage for a time period, to get the currently held CPU usage reports, to send this report via a configured publish method (email) or to delete the currently held reports. 
+The toolkit implements an API which allows consumers to:
+- retrieve a snapshot of CPU usage for a time period
+- publish a snapshot of CPU usage to a configure loader or dashboarding tool e.g. Anypoint Monitoring
+- get the currently held CPU usage reports 
+- send these reports via a configured publish method (email)
+- delete the currently held reports. 
 
 The API specification included in the toolkit provides detailed request and response information. 
 
 
 ## Poller - Metrics Loading
-This schedule is designed to be run on a frequent basis e.g. every 30-60 minutes. It captures a snapshot of the CPU usage for all applications in the previous configured time period. Once metrics have been collected, they are pushed to the configured loading strategy e.g. Anypoint Monitoring Custom Metrics. 
+This schedule is designed to be run on a frequent basis e.g. every 30-60 minutes. It captures a snapshot of the CPU usage for all applications in the configured time period. Once metrics have been collected, they are pushed to the configured loading strategy e.g. Anypoint Monitoring Custom Metrics. 
 
 If enabled, they are also stored in an Object Store v2 instance in order to facilitate Periodic Reporting as described below. 
 
@@ -50,18 +55,23 @@ Some organisations wish for a longer term view of CPU usage e.g. a once per mont
 
 ## Steps
 
-1. Clone or download the project from GitHub `git clone https://github.com/mulesoft-services-engineering/vcore-monitor.git`
+1. Clone or download the project from GitHub `git clone https://github.com/mulesoft-services-engineering/cpu-utilisation-toolkit.git`
 
 2. Adjust the properties, run the project and test it - go to your browser and open `http://localhost:8081/console/`
 
-3. Use the postman collection provided (/postman) to understand the API. The postman collection contains the following requests: (TO DO)
+3. Use the Postman collection provided (/postman) to understand the API. The Postman collection contains the following requests: 
+- GET /cpu-metrics
+- POST /cpu-metrics
+- GET /reports
+- POST /reports
+- DELETE /reports
 
 4. If you want to run the application using the poller mode, you have to configure some properties
 
 ### Properties configurations
 
 - Default configurations defined in `/src/main/resources/properties/config-{env}.yaml`:
-- Make sure to encrypt all sensitive data using the Secure Properties Module: https://docs.mulesoft.com/mule-runtime/4.2/secure-configuration-properties.
+- Make sure to encrypt all sensitive data using the [Secure Properties Module](https://docs.mulesoft.com/mule-runtime/4.2/secure-configuration-properties)
 - Default secure config file defined in `/src/main/resources/properties/config-secure-{env}.yaml`
 - Example `mule.key` used and configured as a Global Property under `global.xml` file
 
