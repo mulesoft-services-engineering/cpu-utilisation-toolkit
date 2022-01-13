@@ -1,0 +1,12 @@
+{
+    "reports": {
+        "email": {
+            "smtpHost": "smtp.test.com",
+            "smtpPort": "465",
+			"smtpUsername": "smtpUsername@test.com",
+			"smtpPassword": "smtpPassword",
+            "toEmailAddresses": ["toEmailAddresses@test.com"],
+            "fromEmailAddress": "fromEmailAddress@test.com"
+        }
+    }
+}
