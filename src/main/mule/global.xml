@@ -17,6 +17,8 @@ http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/sc
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
 	<configuration-properties doc:name="Configuration properties" doc:id="c62ef9dd-f0c2-4e2c-8fb1-c8de5cfaa1b9" file="properties/config.yaml" />
 	<configuration-properties doc:name="env_Configuration properties" doc:id="124c7807-a36b-4af3-ae55-98459815f836" file="properties/config-${mule.env}.yaml" />
+	<global-property doc:name="Global Property" doc:id="578cab7a-9f31-472a-8b32-76cfadf3b7fa" name="mule.env" value="dev" />
+	<global-property doc:name="Global Property" doc:id="982da112-0e7e-47f2-b029-7e695bd93ec7" name="mule.key" value="thisshouldbeakey" />
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="95c7c155-1b31-4ca9-9e2c-9c2647678500" >
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>

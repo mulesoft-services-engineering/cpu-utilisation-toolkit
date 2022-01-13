@@ -5,6 +5,9 @@ https:
   port: "8082"
   private.port: "8092"
   
+api:
+  id: "00000000"
+  
 auth:
   mode: "connected-app-credentials" # valid options are: platform-credentials or connected-app-credentials
   
