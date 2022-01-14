@@ -1,0 +1,261 @@
+{
+	"info": {
+		"_postman_id": "11889a8b-79c0-484f-a5da-d8ed00e34f38",
+		"name": "CPU Utilisation Toolkit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Metrics",
+			"item": [
+				{
+					"name": "Load utilisation - All",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"am\": {\n        \"enabled\": true\n    },\n    \"osv2\": {\n        \"enabled\": true\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/cpu-metrics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"cpu-metrics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Load utilisation - Anypoint Monitoring",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"am\": {\n        \"enabled\": true\n    },\n    \"osv2\": {\n        \"enabled\": false\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/cpu-metrics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"cpu-metrics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Load utilisation - Object Store",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"am\": {\n        \"enabled\": false\n    },\n    \"osv2\": {\n        \"enabled\": true\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/cpu-metrics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"cpu-metrics"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get utilisation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/cpu-metrics",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"cpu-metrics"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"/*",
+							"    Set Anypoint Platform headers from Collection variables",
+							"*/",
+							"var credentialType = pm.environment.get(\"credentialType\").toLowerCase();",
+							"var isUserCreds = credentialType == \"user\"; // user or app",
+							"",
+							"if (isUserCreds) {",
+							"    pm.request.headers.upsert( {key: 'x-anypnt-username', value: pm.environment.get(\"anypointUsername\")} );",
+							"    pm.request.headers.upsert( {key: 'x-anypnt-password', value: pm.environment.get(\"anypointPassword\")} );",
+							"} else {",
+							"    pm.request.headers.upsert( {key: 'x-anypnt-client-id', value: pm.environment.get(\"connectedAppId\")} );",
+							"    pm.request.headers.upsert( {key: 'x-anypnt-client-secret', value: pm.environment.get(\"connectedAppSecret\")}  );",
+							"}",
+							"",
+							"pm.request.headers.upsert( {key: 'x-anypnt-org-id', value: pm.environment.get(\"anypointOrg\")}  );",
+							"",
+							"var startDate = pm.environment.get(\"reportStartDate\");",
+							"if( startDate ) {",
+							"    pm.request.headers.upsert( {key: 'x-start-date', value: startDate}  );",
+							"}",
+							"",
+							"var endDate = pm.environment.get(\"reportEndDate\");",
+							"if( endDate ) {",
+							"    pm.request.headers.upsert( {key: 'x-end-date', value: endDate}  );",
+							"}",
+							"",
+							"var interval = pm.environment.get(\"reportInterval\");",
+							"if( interval ) {",
+							"    pm.request.headers.upsert( {key: 'x-interval', value: interval}  );",
+							"}"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Send utilisation reports email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reports\": {\n        \"email\": {\n            \"smtpHost\":\"smtpHost.test\",\n            \"smtpPort\":8080,\n            \"smtpUsername\":\"smtpUsername-test\",\n            \"smtpPassword\":\"smtpPassword-test\",\n            \"toEmailAddresses\":[\"toEmailAddresses@toEmailAddresses.com\"],\n            \"fromEmailAddress\":\"fromEmailAddress@fromEmailAddress.com\"\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{url}}/api/reports",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get utilisation reports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/reports",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"reports"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete utilisation reports",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/api/reports",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"reports"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
