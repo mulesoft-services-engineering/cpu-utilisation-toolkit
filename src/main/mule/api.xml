@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:os="http://www.mulesoft.org/schema/mule/os" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd">
-    <apikit:config name="cpu-utilisation-toolkit-api-config" api="cpu-utilisation-toolkit-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="api-config" api="cpu-utilisation-toolkit-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     <flow name="api-main">
         <http:listener config-ref="HTTP_Listener_config" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -11,7 +11,7 @@
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="cpu-utilisation-toolkit-api-config" />
+        <apikit:router config-ref="api-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -103,7 +103,7 @@ output application/json
                 <http:headers>#[vars.outboundHeaders default {}]</http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="cpu-utilisation-toolkit-api-config" />
+        <apikit:console config-ref="api-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
@@ -120,11 +120,11 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="delete:\reports:cpu-utilisation-toolkit-api-config">
+    <flow name="delete:\reports:api-config">
         <os:clear doc:name="Clear" doc:id="66785da1-24f6-4e2e-a89f-b53201f671aa" objectStore="Object_store-cpu-usage-reports" />
         <set-payload value="#[null]" doc:name="Set Payload" doc:id="11699692-0995-4620-849c-24958fecfca1" />
     </flow>
-    <flow name="get:\cpu-metrics:cpu-utilisation-toolkit-api-config">
+    <flow name="get:\cpu-metrics:api-config">
         <flow-ref doc:name="common_set-auth-vars-from-headers" doc:id="ac4abb6a-328c-439d-a8f4-c9cad39bd7f4" name="common_set-auth-vars-from-headers" />
         <flow-ref doc:name="common_set-start-end-interval-vars" doc:id="f073881a-d57c-42c6-82be-c3aa0d11d907" name="common_set-start-end-interval-vars" />
         <flow-ref doc:name="collectors_master-flow" doc:id="270c297f-921a-4db2-a680-691aba391e71" name="collectors_master-flow" />
@@ -137,7 +137,7 @@ payload]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="get:\reports:cpu-utilisation-toolkit-api-config">
+    <flow name="get:\reports:api-config">
         <os:retrieve-all doc:name="Retrieve all" doc:id="d0af95f0-2ba3-4294-82dd-26cd8a9485a2" objectStore="Object_store-cpu-usage-reports" />
         <ee:transform doc:name="Transform Message" doc:id="9676bf85-c0ee-4aa8-9f78-fd8ac09e8427">
             <ee:message>
@@ -152,7 +152,7 @@ payload pluck ((value, key, index) -> {
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="post:\reports:application\json:cpu-utilisation-toolkit-api-config">
+    <flow name="post:\reports:application\json:api-config">
         <!-- <flow-ref doc:name="common_set-auth-vars-from-headers" doc:id="eee51d99-8d39-46f0-b52f-176b6f47ba24" name="common_set-auth-vars-from-headers"/>
 		<flow-ref doc:name="common_set-start-end-interval-vars" doc:id="cc8b0d0a-ba06-456a-b791-06c7266adfe8" name="common_set-start-end-interval-vars"/>
 		<flow-ref doc:name="collectors_master-flow" doc:id="6659d478-0016-4046-98ee-dd3ba1a57c9a" name="collectors_master-flow"/>
@@ -161,12 +161,12 @@ payload pluck ((value, key, index) -> {
         <flow-ref doc:name="reports_master-flow" doc:id="84d9d415-4c43-4ed9-884a-97e8dcb41a6c" name="reports_master-flow" />
         <set-payload value="#[null]" doc:name="Set Payload" doc:id="769fa5d9-0ef8-4dc0-b8ba-c6846b750c04" />
     </flow>
-    <flow name="post:\cpu-metrics:application\json:cpu-utilisation-toolkit-api-config">
-        <flow-ref doc:name="common_set-auth-vars-from-headers" doc:id="fc05e76d-2c32-43a2-aad2-0d8db51a9777" name="common_set-auth-vars-from-headers" />
-        <flow-ref doc:name="common_set-start-end-interval-vars" doc:id="323eb926-cad5-40e6-986a-3bc29cb2719e" name="common_set-start-end-interval-vars" />
-        <flow-ref doc:name="common_set-loader-vars-from-payload" doc:id="b02ddd87-adf7-4f1d-bb26-5ca446b8a83d" name="common_set-loader-vars-from-payload" />
-        <flow-ref doc:name="collectors_master-flow" doc:id="4ae12e22-b390-4688-b5ed-18cabe5e3197" name="collectors_master-flow" />
-        <flow-ref doc:name="loaders_master-flow" doc:id="62ce9ff9-92f8-488c-b460-eadf4e72ecb3" name="loaders_master-flow" />
-        <set-payload value="#[null]" doc:name="Set Payload" doc:id="bef9998c-671c-4356-b056-59c1711d26bc" />
+    <flow name="post:\cpu-metrics:application\json:api-config">
+        <flow-ref doc:name="common_set-auth-vars-from-headers" doc:id="e9875a77-262b-42ea-b839-3fe9ad5013e6" name="common_set-auth-vars-from-headers" />
+        <flow-ref doc:name="common_set-start-end-interval-vars" doc:id="936c8724-7d87-4023-906d-bec99ce00b6c" name="common_set-start-end-interval-vars" />
+        <flow-ref doc:name="common_set-loader-vars-from-payload" doc:id="6d00ef45-d56c-4f79-8a6a-49fb879fdbf1" name="common_set-loader-vars-from-payload" />
+        <flow-ref doc:name="collectors_master-flow" doc:id="3158f386-f514-491b-ad49-df16822d7b96" name="collectors_master-flow" />
+        <flow-ref doc:name="loaders_master-flow" doc:id="0e2af65e-30d4-4316-8480-226fe8f4dc6f" name="loaders_master-flow" />
+        <set-payload value="#[null]" doc:name="Set Payload" doc:id="143d68a8-7951-4500-a190-38cb2d28e3d0" />
     </flow>
 </mule>
