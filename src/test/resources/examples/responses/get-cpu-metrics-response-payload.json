@@ -1,0 +1,145 @@
+{
+  "summary": {
+    "production": {
+      "totalVCores": 13,
+      "allocatedVcores": 2.1,
+      "avgCPUusage": 0.3362021185404544
+    },
+    "sandbox": {
+      "totalVCores": 47,
+      "allocatedVcores": 6.3,
+      "avgCPUusage": 0.27897622602293026
+    },
+    "design": {
+      "totalVCores": 85,
+      "allocatedVcores": 0,
+      "avgCPUusage": 0
+    },
+    "startDatetime": "2022-01-11T09:00:00.725Z",
+    "endDatetime": "2022-01-11T10:00:00.725Z"
+  },
+  "businessGroupLevelDetails": [
+    {
+      "businessGroupName": "Fantasy Company",
+      "businessGroupId": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+      "production": {
+        "applications": [
+          {
+            "application": "proc-test-api-dev",
+            "environment": "Production",
+            "environmentType": "Production",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+            "workerType": 0.1,
+            "workerAmount": 1,
+            "status": "STARTED",
+            "averageCPUUtilisation": 2.081251210012337,
+            "endDate": "2022-01-11T10:00:00.725Z",
+            "startDate": "2022-01-11T09:00:00.725Z"
+          },
+          {
+            "application": "exp-test-api-dev",
+            "environment": "Production",
+            "environmentType": "Production",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+            "workerType": 1,
+            "workerAmount": 2,
+            "status": "STARTED",
+            "averageCPUUtilisation": 2.081251210012337,
+            "endDate": "2022-01-11T10:00:00.725Z",
+            "startDate": "2022-01-11T09:00:00.725Z"
+          }
+        ],
+        "totalVCores": 13,
+        "allocatedVcores": 2.1,
+        "avgWeightedCpu": 0.3362021185404544
+      },
+      "sandbox": {
+        "applications": [
+          {
+            "application": "proc-test-api-dev",
+            "environment": "Development",
+            "environmentType": "Sandbox",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+            "workerType": 0.1,
+            "workerAmount": 1,
+            "status": "STARTED",
+            "averageCPUUtilisation": 2.081251210012337,
+            "endDate": "2022-01-11T10:00:00.725Z",
+            "startDate": "2022-01-11T09:00:00.725Z"
+          },
+          {
+            "application": "exp-test-api-dev",
+            "environment": "Development",
+            "environmentType": "Sandbox",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+            "workerType": 1,
+            "workerAmount": 2,
+            "status": "STARTED",
+            "averageCPUUtilisation": 2.081251210012337,
+            "endDate": "2022-01-11T10:00:00.725Z",
+            "startDate": "2022-01-11T09:00:00.725Z"
+          },
+          {
+            "application": "proc-test-api-dev",
+            "environment": "Staging",
+            "environmentType": "Sandbox",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+            "workerType": 0.1,
+            "workerAmount": 1,
+            "status": "STARTED",
+            "averageCPUUtilisation": 2.081251210012337,
+            "endDate": "2022-01-11T10:00:00.725Z",
+            "startDate": "2022-01-11T09:00:00.725Z"
+          },
+          {
+            "application": "exp-test-api-dev",
+            "environment": "Staging",
+            "environmentType": "Sandbox",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+            "workerType": 1,
+            "workerAmount": 2,
+            "status": "STARTED",
+            "averageCPUUtilisation": 2.081251210012337,
+            "endDate": "2022-01-11T10:00:00.725Z",
+            "startDate": "2022-01-11T09:00:00.725Z"
+          },
+          {
+            "application": "proc-test-api-dev",
+            "environment": "Test",
+            "environmentType": "Sandbox",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+            "workerType": 0.1,
+            "workerAmount": 1,
+            "status": "STARTED",
+            "averageCPUUtilisation": 2.081251210012337,
+            "endDate": "2022-01-11T10:00:00.725Z",
+            "startDate": "2022-01-11T09:00:00.725Z"
+          },
+          {
+            "application": "exp-test-api-dev",
+            "environment": "Test",
+            "environmentType": "Sandbox",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
+            "workerType": 1,
+            "workerAmount": 2,
+            "status": "STARTED",
+            "averageCPUUtilisation": 2.081251210012337,
+            "endDate": "2022-01-11T10:00:00.725Z",
+            "startDate": "2022-01-11T09:00:00.725Z"
+          }
+        ],
+        "totalVCores": 47,
+        "allocatedVcores": 6.3,
+        "avgWeightedCpu": 0.27897622602293026
+      },
+      "design": {
+        "applications": [
+          
+        ],
+        "totalVCores": 85,
+        "allocatedVcores": 0,
+        "avgWeightedCpu": 0
+      }
+    }
+  ]
+}

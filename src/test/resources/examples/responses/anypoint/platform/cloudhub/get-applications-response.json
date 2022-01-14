@@ -1,0 +1,238 @@
+[
+   {
+        "versionId": "5e6116de9ea6be51ff3c7ec1",
+        "domain": "proc-test-api-dev",
+        "fullDomain": "proc-test-api-dev.uk-e1.cloudhub.io",
+        "properties":{
+         "env":"development-us-w1",
+         "secure.key":"somesecurekey",
+         "anypoint.platform.config.analytics.agent.enabled":"true"
+      },
+        "propertiesOptions":{
+         "encryption.key":{
+            "secure":true
+         },
+         "secure::cloudhub.password":{
+            "secure":true
+         },
+         "anypoint.platform.client_secret":{
+            "secure":true
+         },
+         "cloudhub.envId":{
+            "secure":true
+         },
+         "secure::cloudhub.username":{
+            "secure":true
+         },
+         "secure::systemapi.client.id":{
+            "secure":true
+         },
+         "secure::systemapi.client.secret":{
+            "secure":true
+         }
+      },
+        "status":"STARTED",
+        "workers": {
+            "type": {
+                "name": "Micro",
+                "weight": 0.1,
+                "cpu": "0.1 vCores",
+                "memory": "500 MB memory"
+            },
+            "amount": 1,
+            "remainingOrgWorkers": 1.1,
+            "totalOrgWorkers": 2.5
+        },
+        "lastUpdateTime": 1639977942918,
+        "fileName":"proc-test-api-dev-1.0.0-mule-application.jar",
+        "muleVersion": {
+            "version": "4.2.2",
+            "updateId": "61bd256b2d84226cf4252d79",
+            "latestUpdateId": "61d3dbe5192e60329daef974",
+            "endOfSupportDate": 1624406400000
+        },
+        "previousMuleVersion": {
+            "version": "4.2.2",
+            "updateId": "61b56bb70c390d0f644770fe",
+            "endOfSupportDate": 1624406400000
+        },
+        "region": "eu-west-2",
+        "persistentQueues": false,
+        "persistentQueuesEncryptionEnabled": true,
+        "persistentQueuesEncrypted": false,
+        "monitoringEnabled": true,
+        "monitoringAutoRestart": true,
+        "staticIPsEnabled": false,
+        "hasFile": true,
+        "secureDataGatewayEnabled": false,
+        "loggingNgEnabled": true,
+        "loggingCustomLog4JEnabled": false,
+        "cloudObjectStoreRegion": "eu-west-2",
+        "insightsReplayDataRegion": "eu-west-2",
+        "isDeploymentWaiting": false,
+        "deploymentGroup": {
+            "id": "5ac685b0de9e5022ac80274e",
+            "name": "EU (London)"
+        },
+        "updateRuntimeConfig": false
+    },
+   {
+        "versionId": "5e67d1347dd2394058bd32c1",
+        "domain":"sys-test-api-dev",
+      "fullDomain":"sys-test-api-dev.us-w1.cloudhub.io",
+      "properties":{
+         "https.requestor.port":"443",
+         "secure.key":"somesecurekey",
+         "anypoint.platform.config.analytics.agent.enabled":"true",
+         "mq.url":"https://mq-us-west-2.anypoint.mulesoft.com/api/v1",
+         "https.requestor.path":"/api/v1/details",
+         "env":"development-us-w1"
+      },
+      "propertiesOptions":{
+         "encryption.key":{
+            "secure":true
+         },
+         "secure::cloudhub.password":{
+            "secure":true
+         },
+         "anypoint.platform.client_secret":{
+            "secure":true
+         },
+         "cloudhub.envId":{
+            "secure":true
+         },
+         "secure::cloudhub.username":{
+            "secure":true
+         },
+         "secure::user.name":{
+            "secure":true
+         },
+         "secure::user.password":{
+            "secure":true
+         }
+      },
+        "status": "UNDEPLOYED",
+        "workers": {
+            "type": {
+                "name": "Micro",
+                "weight": 0.1,
+                "cpu": "0.1 vCores",
+                "memory": "500 MB memory"
+            },
+            "amount": 1,
+            "remainingOrgWorkers": 1.1,
+            "totalOrgWorkers": 2.5
+        },
+        "lastUpdateTime": 1639979413549,
+        "fileName":"sys-test-api-dev-1.0.0-mule-application.jar",
+        "muleVersion": {
+            "version": "4.2.2",
+            "updateId": "61bd256b2d84226cf4252d79",
+            "latestUpdateId": "61d3dbe5192e60329daef974",
+            "endOfSupportDate": 1624406400000
+        },
+        "previousMuleVersion": {
+            "version": "4.2.2",
+            "updateId": "61b56bb70c390d0f644770fe",
+            "endOfSupportDate": 1624406400000
+        },
+        "region": "eu-west-1",
+        "persistentQueues": false,
+        "persistentQueuesEncryptionEnabled": true,
+        "persistentQueuesEncrypted": false,
+        "monitoringEnabled": true,
+        "monitoringAutoRestart": true,
+        "staticIPsEnabled": false,
+        "hasFile": true,
+        "secureDataGatewayEnabled": false,
+        "loggingNgEnabled": true,
+        "loggingCustomLog4JEnabled": false,
+        "insightsReplayDataRegion": "eu-west-1",
+        "isDeploymentWaiting": false,
+        "deploymentGroup": {
+            "id": "5ac685b0de9e5022ac80274d",
+            "name": "EU (Ireland)"
+        },
+        "updateRuntimeConfig": false
+    },
+    {
+        "versionId": "5e6a3d59a72cc655e4d47d8f",
+        "domain":"exp-test-api-dev",
+        "fullDomain":"sys-test-api-dev.us-w1.cloudhub.io",
+        "properties":{
+         "https.requestor.port":"443",
+         "secure.key":"somesecurekey",
+         "anypoint.platform.config.analytics.agent.enabled":"true",
+         "mq.url":"https://mq-us-west-2.anypoint.mulesoft.com/api/v1",
+         "https.requestor.path":"/api/v1/details",
+         "env":"development-us-w1"
+      },
+      "propertiesOptions":{
+         "encryption.key":{
+            "secure":true
+         },
+         "secure::cloudhub.password":{
+            "secure":true
+         },
+         "anypoint.platform.client_secret":{
+            "secure":true
+         },
+         "cloudhub.envId":{
+            "secure":true
+         },
+         "secure::cloudhub.username":{
+            "secure":true
+         },
+         "secure::user.name":{
+            "secure":true
+         },
+         "secure::user.password":{
+            "secure":true
+         }
+      },
+        "status": "STARTED",
+        "workers": {
+            "type": {
+                "name": "Medium",
+                "weight": 1.0,
+                "cpu": "1 vCore",
+                "memory": "1.5 GB memory"
+            },
+            "amount": 2,
+            "remainingOrgWorkers": 1.1,
+            "totalOrgWorkers": 2.5
+        },
+        "lastUpdateTime": 1639980599945,
+        "fileName": "sys-customers-api-0.0.2-SNAPSHOT-mule-application.jar",
+        "muleVersion": {
+            "version": "4.3.0",
+            "updateId": "61bd26523ca92d3951f503cd",
+            "latestUpdateId": "61d3dcca30ec354c29c539a7",
+            "endOfSupportDate": 1678233600000
+        },
+        "previousMuleVersion": {
+            "version": "4.3.0",
+            "updateId": "61b56a4e178c810b5a430a64",
+            "endOfSupportDate": 1678233600000
+        },
+        "region": "eu-west-2",
+        "persistentQueues": false,
+        "persistentQueuesEncryptionEnabled": true,
+        "persistentQueuesEncrypted": false,
+        "monitoringEnabled": true,
+        "monitoringAutoRestart": true,
+        "staticIPsEnabled": false,
+        "hasFile": true,
+        "secureDataGatewayEnabled": false,
+        "loggingNgEnabled": true,
+        "loggingCustomLog4JEnabled": false,
+        "cloudObjectStoreRegion": "eu-central-1",
+        "insightsReplayDataRegion": "eu-west-2",
+        "isDeploymentWaiting": false,
+        "deploymentGroup": {
+            "id": "5ac685b0de9e5022ac80274e",
+            "name": "EU (London)"
+        },
+        "updateRuntimeConfig": false
+    }
+]
