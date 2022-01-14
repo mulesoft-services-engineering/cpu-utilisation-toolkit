@@ -112,7 +112,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			</munit-tools:then-return>
 		</munit-tools:mock-when>
 	</munit:before-test>
-	<munit:test name="get-cpu-utilisation-toolkit-test" doc:id="2d59e154-abb2-4401-8644-c0e72cfa8941" timeOut="1200000">
+	<munit:test name="get-cpu-metrics-test" doc:id="2d59e154-abb2-4401-8644-c0e72cfa8941" timeOut="1200000">
 		<munit:execution >
 			<set-variable value="#[MunitTools::getResourceAsString('examples/responses/get-cpu-metrics-response-payload.json')]" doc:name="Set Expected Response Payload" doc:id="ee263c06-cd1f-4701-98a9-6b6e3c3f2971" variableName="expectedResponse" mimeType="application/json" />
 			<ee:transform doc:name="Set Mocked Attributes" doc:id="0fd84368-c5bd-4b51-92a8-738ae2d2be96" >
@@ -122,13 +122,13 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				<ee:variables >
 				</ee:variables>
 			</ee:transform>
-			<flow-ref doc:name="Flow-ref to get:\cpu-metrics:cpu-monitoring-api-config" doc:id="a0a07905-82b9-4e42-8bd9-b3502bf215e7" name="get:\cpu-metrics:cpu-monitoring-api-config"/>
+			<flow-ref doc:name="Flow-ref to get:\cpu-metrics:api-config" doc:id="a0a07905-82b9-4e42-8bd9-b3502bf215e7" name="get:\cpu-metrics:api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert Expected Response" doc:id="72a1d3a6-1a93-4b66-83ac-9096732c9c78" expression='#[payload]' is='#[MunitTools::equalTo(vars.expectedResponse)]' message="The response payload is not the expected" />
 		</munit:validation>
 	</munit:test>
-	<munit:test name="post-cpu-utilisation-toolkit-test" doc:id="f028c68b-049e-4ed9-b893-3716cf2a04bc" timeOut="1200000">
+	<munit:test name="post-cpu-metrics-test" doc:id="f028c68b-049e-4ed9-b893-3716cf2a04bc" timeOut="1200000">
 		<munit:execution >
 			<ee:transform doc:name="Set Mocked Attributes" doc:id="7c2628f5-e24f-4458-9ed6-9a58b00692a8" >
 				<ee:message >
@@ -140,7 +140,7 @@ readUrl('classpath://examples/requests/post-cpu-utilisation-toolkit-request-payl
 					<ee:set-attributes resource="dw/mock-platform-metrics-call-attributes-connected-app.dwl" />
 				</ee:message>
 			</ee:transform>
-			<flow-ref doc:name="Flow-ref to post:\cpu-metrics:application\json:cpu-monitoring-api-config" doc:id="f1436b42-ca8d-4974-8b86-0af9ffa56287" name="post:\cpu-metrics:application\json:cpu-monitoring-api-config"/>
+			<flow-ref doc:name="Flow-ref to post:\cpu-metrics:application\json:api-config" doc:id="f1436b42-ca8d-4974-8b86-0af9ffa56287" name="post:\cpu-metrics:application\json:api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert-equals doc:name="Assert Expected Response" doc:id="d465ebdb-1dc3-4679-be42-07f7af1556e3" actual="#[payload]" expected="#[null]" message="The response payload should be null"/>
@@ -164,7 +164,7 @@ readUrl('classpath://examples/requests/post-cpu-utilisation-toolkit-request-payl
 	<munit:test name="get-reports-test" doc:id="5bf4681e-4c58-4f7c-b169-10bcf00c8014" >
 		<munit:execution >
 			<set-variable value="#[MunitTools::getResourceAsString('examples/responses/get-reports-response-payload.json')]" doc:name="Set Expected Response Payload" doc:id="ebd255a6-2049-4a46-b4e1-106eac588490" variableName="expectedResponse" mimeType="application/json" />
-			<flow-ref doc:name="Flow-ref to get:\reports:cpu-monitoring-api-config" doc:id="4750fbf7-acfe-42f6-87bb-e1a4aa4a0853" name="get:\reports:cpu-monitoring-api-config"/>
+			<flow-ref doc:name="Flow-ref to get:\reports:api-config" doc:id="4750fbf7-acfe-42f6-87bb-e1a4aa4a0853" name="get:\reports:api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert-that doc:name="Assert Expected Response" doc:id="19e8dcd4-a6c4-4c1f-b661-3be1e01ad3b9" expression='#[payload]' is='#[MunitTools::equalTo(vars.expectedResponse)]' message="The response payload is not the expected" />
@@ -180,7 +180,7 @@ output application/json
 readUrl('classpath://examples/requests/post-reports-request-payload.json')]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
-			<flow-ref doc:name="Flow-ref to post:\reports:application\json:cpu-monitoring-api-config" doc:id="8a658983-2c74-4208-8b06-22be75bb93a0" name="post:\reports:application\json:cpu-monitoring-api-config"/>
+			<flow-ref doc:name="Flow-ref to post:\reports:application\json:api-config" doc:id="8a658983-2c74-4208-8b06-22be75bb93a0" name="post:\reports:application\json:api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert-equals doc:name="Assert Expected Response" doc:id="db6965c9-6259-44f1-9faa-81c7f4d8a5b6" actual="#[payload]" expected="#[null]" message="The response payload should be null"/>
@@ -193,13 +193,49 @@ readUrl('classpath://examples/requests/post-reports-request-payload.json')]]></e
 	</munit:test>
 	<munit:test name="delete-reports-test" doc:id="a2dbfc1e-0da6-45c5-bae9-4ef60f7ed409" >
 		<munit:execution >
-			<flow-ref doc:name="Flow-ref to delete:\reports:cpu-monitoring-api-config" doc:id="d67ab715-a1ee-4869-8c23-50f121dde1fe" name="delete:\reports:cpu-monitoring-api-config"/>
+			<flow-ref doc:name="Flow-ref to delete:\reports:api-config" doc:id="d67ab715-a1ee-4869-8c23-50f121dde1fe" name="delete:\reports:api-config"/>
 		</munit:execution>
 		<munit:validation >
 			<munit-tools:assert-equals doc:name="Assert Expected Response" doc:id="5a23e087-2db5-4040-9ad1-27e951f4f0c3" actual="#[payload]" expected="#[null]" message="The response payload should be null"/>
 			<munit-tools:verify-call doc:name="Verify Clear" doc:id="65dbf72b-52a8-4146-bfdf-7bb29f335f11" processor="os:clear" times="1">
 				<munit-tools:with-attributes >
 					<munit-tools:with-attribute whereValue="Clear" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="poller-collector-enabled-test" doc:id="af813df3-3bb9-464c-9e92-d7da1fab8206" >
+		<munit:execution >
+			<set-variable doc:name="Set Expected Response Payload" doc:id="17b19e4c-704e-4724-b299-25964ada19f8" variableName="expectedResponse" mimeType="application/json" value="#[MunitTools::getResourceAsString('examples/responses/poller-collector-response-payload.json')]"/>
+			<flow-ref doc:name="Flow-ref to poller-collector-flow" doc:id="1a264deb-688f-48f5-a3cb-5ba37fb0df70" name="poller-collector-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert Expected Response" doc:id="219d5124-9e1b-46ab-baad-e3ad1c0a7721" message="The response payload is not the expected" expression="#[payload]" is="#[MunitTools::equalTo(vars.expectedResponse)]" />
+			<munit-tools:verify-call doc:name="Verify OS Loader call" doc:id="8c5781e7-d046-4ac9-a395-afb9e98a3e19" processor="os:store" times="1" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Periodic CPU usage report" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Anypoint Monitoring Loader Summary call" doc:id="c422db3f-f3c3-415c-a990-3534a6d10ca7" processor="custom-metrics:send" times="1" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Summary Custom Metric" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Anypoint Monitoring Loader BG Specific call" doc:id="8eb550c1-802b-47c9-9188-df3b034e4082" processor="custom-metrics:send" times="1" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="BG Specific Custom Metrics" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="poller-reporter-disabled-test" doc:id="51506ece-b9d3-41d6-a7e6-cc1f7d64b50f" >
+		<munit:execution >
+			<flow-ref doc:name="poller-reporter-flow" doc:id="9f806ea5-fb1d-4603-8274-bb4cb9f1b43e" name="poller-reporter-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:verify-call doc:name="Verify Reporter Disbaled Log" doc:id="fc3c9ef9-9036-4903-b5a7-56b8559b1ee6" processor="logger" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Reporter Disabled" attributeName="doc:name" />
 				</munit-tools:with-attributes>
 			</munit-tools:verify-call>
 		</munit:validation>
