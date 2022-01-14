@@ -111,5 +111,5 @@ So in the example below (4 \* 0.1 \*2 + 10\*2 + 27 \* 1) / 6 = 7.97 %
 
 
 ## Limitations
-The application only monitors CloudHub deployed applications and does not include RTF or on-prem applications in the calculations. 
+The application only extracts metrics for CloudHub deployed applications and does not include RTF or on-prem applications in the calculations. 
 

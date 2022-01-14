@@ -30,7 +30,7 @@ pipeline {
       }
 
       environment {
-        APP_NAME = 'vcore-monitor-dev'
+        APP_NAME = 'cpu-utilisation-toolkit'
         ENVIRONMENT = 'Development'
         DEPLOY_CREDS = credentials('deploy-anypoint-user')
         MULEKEY = credentials('mule-key')
@@ -53,7 +53,7 @@ pipeline {
       }
 
       environment {
-        APP_NAME = 'vcore-monitor-sandbox'
+        APP_NAME = 'cpu-utilisation-toolkit'
         ENVIRONMENT = 'Sandbox'
         DEPLOY_CREDS = credentials('deploy-anypoint-user')
         MULEKEY = credentials('mule-key')

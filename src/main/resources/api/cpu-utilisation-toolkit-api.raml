@@ -1,7 +1,7 @@
 #%RAML 1.0
-title: CPU Metrics API
+title: CPU Utilisation Toolkit API
 description: | 
-  The CPU Metrics API is an extensible Mule application intended to collect and aggregate metrics related to CPU usage of applications deployed on CloudHub, and to generate and publish reports of these metrics to various systems. 
+  The CPU Utilisation Toolkit is an extensible Mule application intended to collect and aggregate metrics related to CPU usage of applications deployed on CloudHub, and to generate and publish reports of these metrics to various systems. This is the API descriptor for said application. 
 
 version: v1
 protocols: 
@@ -20,7 +20,6 @@ traits:
 uses:
   dataTypesLibrary: libraries/dataTypes.raml
 
-# Better resource name? /metrics ? /applications/metrics ? 
 /cpu-metrics:
   is:
     - receiveAnypointOrgId
@@ -28,13 +27,13 @@ uses:
     - receivePlatformUser
     - receiveExcludeLists
   get:
-    description: Retrieves a snapshot of the current vCore usage metrics for applications deployed to CloudHub
+    description: Retrieves a snapshot of the current CPU usage metrics. Currently applications deployed to CloudHub are considered. 
     responses:
       200:
         body:
           application/json:
             type: dataTypesLibrary.metrics
-            example: !include examples/vCoreMetrics.raml
+            example: !include examples/cpuUtilisationMetrics.raml
   
   post:
     body:

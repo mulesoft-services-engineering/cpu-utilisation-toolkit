@@ -22,7 +22,7 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="95c7c155-1b31-4ca9-9e2c-9c2647678500" >
 		<http:listener-connection host="0.0.0.0" port="${http.port}" />
 	</http:listener-config>
-	<apikit:config name="cpu-monitoring-api-config" api="cpu-metrics-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<!-- <apikit:config name="cpu-monitoring-api-config" api="cpu-metrics-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" /> -->
 	<http:request-config name="anypoint_HTTP_Request_configuration" doc:name="anypoint_HTTP Request configuration" doc:id="6ce0ce3d-0aa2-47ec-b1b5-d4a68a497d39" enableCookies="false" responseTimeout="${anypoint.platform.responseTimeout}">
 		<http:request-connection host="${anypoint.platform.host}" port="443" protocol="HTTPS" />
 	</http:request-config>
@@ -35,5 +35,5 @@ http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/m
 			</tls:context>
 		</email:smtps-connection>
 	</email:smtp-config>
-	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="651033a5-e1f3-487b-9708-a29b03fb93ea" flowRef="cpu-monitoring-api-main" />
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="651033a5-e1f3-487b-9708-a29b03fb93ea" flowRef="api-main" />
 </mule>

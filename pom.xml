@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mulesoft</groupId>
-	<artifactId>vcore-monitor</artifactId>
+	<artifactId>cpu-utilisation-toolkit</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
-	<name>vcore-monitor</name>
+	<name>cpu-utilisation-toolkit</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -137,12 +137,6 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>org.mule.connectors</groupId>
-			<artifactId>mule-email-connector</artifactId>
-			<version>1.4.2</version>
-			<classifier>mule-plugin</classifier>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-compression-module</artifactId>
 			<version>2.1.1</version>
@@ -151,7 +145,13 @@
 		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-apikit-module</artifactId>
-			<version>1.5.5</version>
+			<version>1.5.8</version>
+			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>org.mule.connectors</groupId>
+			<artifactId>mule-email-connector</artifactId>
+			<version>1.5.2</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>
