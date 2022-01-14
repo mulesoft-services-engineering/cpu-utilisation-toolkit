@@ -22,8 +22,8 @@ output application/java
   },
   "businessGroupLevelDetails": [
     {
-      "businessGroupName": "MuleSoft Services Engineering",
-      "businessGroupId": "cdcb397d-3d83-498f-b889-fb43a40ea8f6",
+      "businessGroupName": "Fantasy Company",
+      "businessGroupId": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
       "production": {
         "applications": [],
         "totalVCores": 5,
@@ -36,7 +36,7 @@ output application/java
             "application": "cpu-usage-metrics",
             "environment": "Sandbox",
             "environmentType": "Sandbox",
-            "businessGroup": "cdcb397d-3d83-498f-b889-fb43a40ea8f6",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
             "workerType": 0.1,
             "workerAmount": 1,
             "status": "STARTED",
@@ -48,7 +48,7 @@ output application/java
             "application": "vcore-monitor-sandbox",
             "environment": "Sandbox",
             "environmentType": "Sandbox",
-            "businessGroup": "cdcb397d-3d83-498f-b889-fb43a40ea8f6",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
             "workerType": 0.1,
             "workerAmount": 1,
             "status": "STARTED",
@@ -60,7 +60,7 @@ output application/java
             "application": "vcore-metrics",
             "environment": "Sandbox",
             "environmentType": "Sandbox",
-            "businessGroup": "cdcb397d-3d83-498f-b889-fb43a40ea8f6",
+            "businessGroup": "877baaaa-36ba-4021-82d5-45bae78e0fe2",
             "workerType": 0.1,
             "workerAmount": 1,
             "status": "STARTED",
