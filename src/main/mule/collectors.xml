@@ -196,17 +196,18 @@ output application/java
 				<ee:message >
 					<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
-fun appAverageCpu(workerStatistics) = if(!isEmpty(workerStatistics)) 
-sum(workerStatistics 
-	map (((item, index) -> 
-        if(item.statistics != null and item.statistics.cpu != null)
-		avg(item.statistics.cpu 
-			filterObject ((value, key, index) -> value != null and value != -1) 
-			pluck ((value, key, index) -> value)
-		) else 0
-	)) default []
-) 
-else 0
+%dw 2.0
+output application/json
+fun appAverageCpu(workerStatistics) = 
+    using (cpuStats = flatten( workerStatistics..cpu 
+    map ((item, index) -> 
+        item filterObject ((value, key, index) -> value != null and value > 0) 
+        pluck ((value, key, index) -> value) 
+        ) default []
+    ))
+    if(! isEmpty(cpuStats))
+        avg(cpuStats)
+    else 0
 ---
 payload..payload  map ( {
         application : $.application.name,
@@ -219,8 +220,7 @@ payload..payload  map ( {
         averageCPUUtilisation: appAverageCpu($.statistics),
         endDate: vars.endDate,
 	    startDate : vars.startDate
-    })
-]]></ee:set-payload>
+    })]]></ee:set-payload>
 				</ee:message>
 			</ee:transform>
 		</parallel-foreach>
