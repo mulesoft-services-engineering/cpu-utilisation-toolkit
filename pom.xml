@@ -4,7 +4,7 @@
 
 	<groupId>com.mulesoft</groupId>
 	<artifactId>cpu-utilisation-toolkit</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>mule-application</packaging>
 
 	<name>cpu-utilisation-toolkit</name>
@@ -13,9 +13,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.4.0</app.runtime>
+		<app.runtime>4.4.0-20211227</app.runtime>
 		<mule.maven.plugin.version>3.5.1</mule.maven.plugin.version>
-		<munit.version>2.3.6</munit.version>
+		<munit.version>2.3.7</munit.version>
 	</properties>
 
 	<build>
