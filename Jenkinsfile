@@ -57,6 +57,7 @@ pipeline {
         ENVIRONMENT = 'Sandbox'
         DEPLOY_CREDS = credentials('deploy-anypoint-user')
         MULEKEY = credentials('mule-key')
+        AP_CLIENT_CREDS = credentials('anypoint_platform_client_credentials_sandbox')
         MULEENV = "dev"
         WORKERTYPE = "Micro"
         WORKERS = 1
@@ -64,7 +65,7 @@ pipeline {
       }
       
       steps {
-            sh 'mvn -U -V -e -B -DskipTests deploy -DmuleDeploy -Dapp.runtime="$MULE_VERSION" -Dusername="$DEPLOY_CREDS_USR" -Dpassword="$DEPLOY_CREDS_PSW" -Dcloudhub.application.name="$APP_NAME" -Denvironment="$ENVIRONMENT" -DbusinessGroupId="$BG" -DworkerType="$WORKERTYPE" -Dworkers=$WORKERS -Dregion="$REGION" -Dmule.env="$MULEENV" -Dmule.key="$MULEKEY"'
+            sh 'mvn -U -V -e -B -DskipTests deploy -DmuleDeploy -Dapp.runtime="$MULE_VERSION" -Dusername="$DEPLOY_CREDS_USR" -Dpassword="$DEPLOY_CREDS_PSW" -Dcloudhub.application.name="$APP_NAME" -Denvironment="$ENVIRONMENT" -DbusinessGroupId="$BG" -DworkerType="$WORKERTYPE" -Dworkers=$WORKERS -Dregion="$REGION" -Dmule.env="$MULEENV" -Dmule.key="$MULEKEY" -Danypoint.platform.client_id="$AP_CLIENT_CREDS_USR" -Danypoint.platform.client_secret="$AP_CLIENT_CREDS_PSW"'
       }
     }
 
