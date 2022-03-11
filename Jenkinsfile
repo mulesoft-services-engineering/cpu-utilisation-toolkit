@@ -54,6 +54,7 @@ pipeline {
 
       environment {
         APP_NAME = 'cpu-utilisation-toolkit'
+        API_ID = credentials('cpu_utilisation_toolkit_api_id_sandbox')
         ENVIRONMENT = 'Sandbox'
         DEPLOY_CREDS = credentials('deploy-anypoint-user')
         MULEKEY = credentials('mule-key')
@@ -65,7 +66,7 @@ pipeline {
       }
       
       steps {
-            sh 'mvn -U -V -e -B -DskipTests deploy -DmuleDeploy -Dapp.runtime="$MULE_VERSION" -Dusername="$DEPLOY_CREDS_USR" -Dpassword="$DEPLOY_CREDS_PSW" -Dcloudhub.application.name="$APP_NAME" -Denvironment="$ENVIRONMENT" -DbusinessGroupId="$BG" -DworkerType="$WORKERTYPE" -Dworkers=$WORKERS -Dregion="$REGION" -Dmule.env="$MULEENV" -Dmule.key="$MULEKEY" -Danypoint.platform.client_id="$AP_CLIENT_CREDS_USR" -Danypoint.platform.client_secret="$AP_CLIENT_CREDS_PSW"'
+            sh 'mvn -U -V -e -B -DskipTests deploy -DmuleDeploy -Dapp.runtime="$MULE_VERSION" -Dusername="$DEPLOY_CREDS_USR" -Dpassword="$DEPLOY_CREDS_PSW" -Dcloudhub.application.name="$APP_NAME" -Denvironment="$ENVIRONMENT" -DbusinessGroupId="$BG" -DworkerType="$WORKERTYPE" -Dworkers=$WORKERS -Dregion="$REGION" -Dmule.env="$MULEENV" -Dmule.key="$MULEKEY" -Danypoint.platform.client_id="$AP_CLIENT_CREDS_USR" -Danypoint.platform.client_secret="$AP_CLIENT_CREDS_PSW" -Dapi.id="$API_ID"'
       }
     }
 
